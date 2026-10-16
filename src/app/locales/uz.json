@@ -1,0 +1,182 @@
+{
+  "common": {
+    "save": "Saqlash",
+    "cancel": "Bekor qilish",
+    "delete": "O'chirish",
+    "edit": "Tahrirlash",
+    "search": "Qidirish",
+    "loading": "Yuklanmoqda...",
+    "comingSoon": "Bu sahifa tez orada tayyor bo'ladi",
+    "clear": "Tozalash"
+  },
+  "errors": {
+    "network": "Serverga ulanib bo'lmadi. Internetni tekshiring.",
+    "server": "Serverda xatolik yuz berdi. Keyinroq urinib ko'ring.",
+    "unknown": "Kutilmagan xatolik yuz berdi"
+  },
+  "theme": {
+    "light": "Yorug'",
+    "dark": "Qorong'i",
+    "system": "Tizim"
+  },
+  "login": {
+    "title": "Tizimga kirish",
+    "subtitle": "Email va parolingizni kiriting",
+    "email": "Email",
+    "emailPlaceholder": "name@example.com",
+    "password": "Parol",
+    "passwordPlaceholder": "Parolni kiriting",
+    "showPassword": "Parolni ko'rsatish",
+    "hidePassword": "Parolni yashirish",
+    "submit": "Kirish",
+    "submitting": "Kirilmoqda..."
+  },
+  "validation": {
+    "required": "Bu maydon to'ldirilishi shart",
+    "emailInvalid": "Email manzilini to'g'ri kiriting",
+    "passwordMin": "Parol kamida 6 ta belgidan iborat bo'lishi kerak",
+    "numberInvalid": "Musbat raqam kiriting",
+    "marginNegative": "Marja manfiy bo'lmasligi kerak"
+  },
+  "layout": {
+    "actions": {
+      "notifications": "Bildirishnomalar",
+      "profile": "Profil",
+      "logout": "Chiqish"
+    },
+    "footer": {
+      "fullscreen": "To'liq ekran",
+      "calendar": "Kalendar",
+      "calculator": "Kalkulyator",
+      "addTab": "Yangi savatcha qo'shish"
+    },
+    "loadingMenu": "Menyu yuklanmoqda",
+    "user": {
+      "theme": "Mavzu",
+      "language": "Til",
+      "roles": {
+        "BUSINESS_OWNER": "Markaz egasi"
+      }
+    },
+    "menu": {
+      "open": "Menyuni ochish",
+      "close": "Menyuni yopish",
+      "loading": "Menyu yuklanmoqda"
+    }
+  },
+  "product": {
+    "searchPlaceholder": "Tovar nomi, artikul yoki shtrix kod...",
+    "filter": "Filter",
+    "filtersReset": "Filterni tozalash",
+    "filters": {
+      "stock_id": "Ombor bo'yicha",
+      "supplier_id": "Ta'minotchi bo'yicha",
+      "unit_id": "Birlik bo'yicha",
+      "shelf_number_id": "Polka raqami bo'yicha",
+      "available_image": "Rasm",
+      "in_stock": "Qoldiq",
+      "available_limit": "Limit",
+      "available_barcode": "Shtrix kod"
+    },
+    "filtersAll": {
+      "stock_id": "Barcha omborlar",
+      "supplier_id": "Barcha ta'minotchilar",
+      "unit_id": "Barcha birliklar",
+      "shelf_number_id": "Barcha polkalar"
+    },
+    "filterValues": {
+      "all": "Hammasi",
+      "yes": "Bor",
+      "no": "Yo'q"
+    },
+    "add": "Yangi tovar qo'shish",
+    "addMenu": {
+      "manual": "Qo'lda qo'shish",
+      "import": "Excel orqali import",
+      "template": "Excel shablonini yuklab olish"
+    },
+    "export": "Yuklab olish (CSV)",
+    "totalCount": "Jami soni",
+    "totalCost": "Tan narx jami",
+    "columns": {
+      "product": "Tovar",
+      "limit": "Limit",
+      "cost": "Tan narx",
+      "wholesale": "Optom narx",
+      "retail": "Sotuv narxi",
+      "article": "Artikul",
+      "quantity": "Miqdor",
+      "unit": "Birlik",
+      "shelf": "Polka raqami",
+      "stock": "Ombor",
+      "supplier": "Ta'minotchi",
+      "actions": "Amal",
+      "image": "Rasm",
+      "margin": "Marja %",
+      "barcode": "Shtrix kod"
+    },
+    "columnsSettings": "Ustunlarni sozlash",
+    "variantsCount": "{count} ta variant",
+    "limitBadge": "Limit",
+    "selectAll": "Hammasini tanlash",
+    "selectRow": "Qatorni tanlash",
+    "edit": "Tahrirlash",
+    "delete": "O'chirish",
+    "deleteTitle": "Tovarni o'chirish",
+    "deleteVariantTitle": "Variantni o'chirish",
+    "deleteDescription": "\"{name}\" o'chiriladi. Bu amalni qaytarib bo'lmaydi.",
+    "deleteError": "O'chirib bo'lmadi. Qayta urinib ko'ring.",
+    "empty": "Tovar topilmadi",
+    "loading": "Tovarlar yuklanmoqda",
+    "loadError": "Tovarlarni yuklab bo'lmadi.",
+    "retry": "Qayta urinish",
+    "limit": "Limit",
+    "previous": "Oldingi sahifa",
+    "next": "Keyingi sahifa",
+    "page": "Sahifa raqami"
+  },
+  "productCreate": {
+    "title": "Yangi tovar qo'shish",
+    "description": "Bazaga yangi mahsulot yozuvi yaratiladi. Qoldiqni \"Tovar prixod qilish\" orqali kiriting.",
+    "back": "Orqaga",
+    "save": "Saqlash",
+    "saving": "Saqlanmoqda...",
+    "saved": "Tovarlar saqlandi",
+    "roundPrices": "Narxlarni yaxlitlash (1000 so'mgacha)",
+    "name": "Mahsulot nomi",
+    "namePlaceholder": "Mahsulot nomini kiriting",
+    "unit": "Birlik",
+    "limit": "Limit",
+    "boxQuantity": "Karobkadagi soni",
+    "cost": "Tan narx",
+    "wholesale": "Optom narx",
+    "retail": "Sotuv narx",
+    "costPlus": "Tan narx + %",
+    "barcode": "Shtrix kod",
+    "barcodePlaceholder": "Shtrix kod",
+    "article": "Artikul",
+    "articlePlaceholder": "Artikul",
+    "image": "Rasm",
+    "imagePlaceholder": "Rasm yuklash",
+    "imageUploading": "Yuklanmoqda...",
+    "belowCost": "Tan narxdan past sotilmasin",
+    "addVariants": "Qo'shimcha variantlar (rang/razmer/hajm)",
+    "variant": "Variant {index}",
+    "variantName": "Variant nomi",
+    "variantNamePlaceholder": "Masalan: \"Oq\"",
+    "variantsHint": "Narx, shtrix kod va rasm har bir variant uchun pastda kiritiladi",
+    "addVariant": "Variant qo'shish",
+    "finishVariants": "Variantlarni yakunlash",
+    "cancelVariants": "Bekor qilish",
+    "editVariants": "Variantlarni tahrirlash",
+    "finishHint": "Variantlarni yakunlamaguncha boshqa tovar qo'sha olmaysiz.",
+    "variantsCount": "{count} ta variant",
+    "addRow": "Yangi tovar qo'shish",
+    "maxRows": "Eng ko'pi bilan {count} ta tovar qo'shish mumkin",
+    "removeRow": "Tovarni o'chirish",
+    "removeVariant": "Variantni o'chirish",
+    "generate": "Avtomatik yaratish",
+    "noCurrency": "Valyuta topilmadi",
+    "removeImage": "Rasmni olib tashlash"
+  }
+}

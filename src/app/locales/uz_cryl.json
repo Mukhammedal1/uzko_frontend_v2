@@ -1,0 +1,182 @@
+{
+  "common": {
+    "save": "Сақлаш",
+    "cancel": "Бекор қилиш",
+    "delete": "Ўчириш",
+    "edit": "Таҳрирлаш",
+    "search": "Қидириш",
+    "loading": "Юкланмоқда...",
+    "comingSoon": "Бу саҳифа тез орада тайёр бўлади",
+    "clear": "Тозалаш"
+  },
+  "errors": {
+    "network": "Серверга уланиб бўлмади. Интернетни текширинг.",
+    "server": "Серверда хатолик юз берди. Кейинроқ уриниб кўринг.",
+    "unknown": "Кутилмаган хатолик юз берди"
+  },
+  "theme": {
+    "light": "Ёруғ",
+    "dark": "Қоронғи",
+    "system": "Тизим"
+  },
+  "login": {
+    "title": "Тизимга кириш",
+    "subtitle": "Email ва паролингизни киритинг",
+    "email": "Email",
+    "emailPlaceholder": "name@example.com",
+    "password": "Парол",
+    "passwordPlaceholder": "Паролни киритинг",
+    "showPassword": "Паролни кўрсатиш",
+    "hidePassword": "Паролни яшириш",
+    "submit": "Кириш",
+    "submitting": "Кирилмоқда..."
+  },
+  "validation": {
+    "required": "Бу майдон тўлдирилиши шарт",
+    "emailInvalid": "Email манзилини тўғри киритинг",
+    "passwordMin": "Парол камида 6 та белгидан иборат бўлиши керак",
+    "numberInvalid": "Мусбат рақам киритинг",
+    "marginNegative": "Маржа манфий бўлмаслиги керак"
+  },
+  "layout": {
+    "actions": {
+      "notifications": "Билдиришномалар",
+      "profile": "Профил",
+      "logout": "Чиқиш"
+    },
+    "footer": {
+      "fullscreen": "Тўлиқ экран",
+      "calendar": "Календарь",
+      "calculator": "Калькулятор",
+      "addTab": "Янги саватча қўшиш"
+    },
+    "loadingMenu": "Меню юкланмоқда",
+    "user": {
+      "theme": "Мавзу",
+      "language": "Тил",
+      "roles": {
+        "BUSINESS_OWNER": "Марказ эгаси"
+      }
+    },
+    "menu": {
+      "open": "Менюни очиш",
+      "close": "Менюни ёпиш",
+      "loading": "Меню юкланмоқда"
+    }
+  },
+  "product": {
+    "searchPlaceholder": "Товар номи, артикул ёки штрих код...",
+    "filter": "Фильтр",
+    "filtersReset": "Фильтрни тозалаш",
+    "filters": {
+      "stock_id": "Омбор бўйича",
+      "supplier_id": "Таъминотчи бўйича",
+      "unit_id": "Бирлик бўйича",
+      "shelf_number_id": "Полка рақами бўйича",
+      "available_image": "Расм",
+      "in_stock": "Қолдиқ",
+      "available_limit": "Лимит",
+      "available_barcode": "Штрих код"
+    },
+    "filtersAll": {
+      "stock_id": "Барча омборлар",
+      "supplier_id": "Барча таъминотчилар",
+      "unit_id": "Барча бирликлар",
+      "shelf_number_id": "Барча полкалар"
+    },
+    "filterValues": {
+      "all": "Ҳаммаси",
+      "yes": "Бор",
+      "no": "Йўқ"
+    },
+    "add": "Янги товар қўшиш",
+    "addMenu": {
+      "manual": "Қўлда қўшиш",
+      "import": "Excel орқали импорт",
+      "template": "Excel шаблонини юклаб олиш"
+    },
+    "export": "Юклаб олиш (CSV)",
+    "totalCount": "Жами сони",
+    "totalCost": "Тан нарх жами",
+    "columns": {
+      "product": "Товар",
+      "limit": "Лимит",
+      "cost": "Тан нарх",
+      "wholesale": "Оптом нарх",
+      "retail": "Сотув нархи",
+      "article": "Артикул",
+      "quantity": "Миқдор",
+      "unit": "Бирлик",
+      "shelf": "Полка рақами",
+      "stock": "Омбор",
+      "supplier": "Таминотчи",
+      "actions": "Амал",
+      "image": "Расм",
+      "margin": "Маржа %",
+      "barcode": "Штрих код"
+    },
+    "columnsSettings": "Устунларни созлаш",
+    "variantsCount": "{count} та вариант",
+    "limitBadge": "Лимит",
+    "selectAll": "Ҳаммасини танлаш",
+    "selectRow": "Қаторни танлаш",
+    "edit": "Таҳрирлаш",
+    "delete": "Ўчириш",
+    "deleteTitle": "Товарни ўчириш",
+    "deleteVariantTitle": "Вариантни ўчириш",
+    "deleteDescription": "\"{name}\" ўчирилади. Бу амални қайтариб бўлмайди.",
+    "deleteError": "Ўчириб бўлмади. Қайта уриниб кўринг.",
+    "empty": "Товар топилмади",
+    "loading": "Товарлар юкланмоқда",
+    "loadError": "Товарларни юклаб бўлмади.",
+    "retry": "Қайта уриниш",
+    "limit": "Лимит",
+    "previous": "Олдинги саҳифа",
+    "next": "Кейинги саҳифа",
+    "page": "Саҳифа рақами"
+  },
+  "productCreate": {
+    "title": "Янги товар қўшиш",
+    "description": "Базага янги маҳсулот ёзуви яратилади. Қолдиқни \"Товар приход қилиш\" орқали киритинг.",
+    "back": "Орқага",
+    "save": "Сақлаш",
+    "saving": "Сақланмоқда...",
+    "saved": "Товарлар сақланди",
+    "roundPrices": "Нархларни яхлитлаш (1000 сўмгача)",
+    "name": "Маҳсулот номи",
+    "namePlaceholder": "Маҳсулот номини киритинг",
+    "unit": "Бирлик",
+    "limit": "Лимит",
+    "boxQuantity": "Коробкадаги сони",
+    "cost": "Тан нарх",
+    "wholesale": "Оптом нарх",
+    "retail": "Сотув нарх",
+    "costPlus": "Тан нарх + %",
+    "barcode": "Штрих код",
+    "barcodePlaceholder": "Штрих код",
+    "article": "Артикул",
+    "articlePlaceholder": "Артикул",
+    "image": "Расм",
+    "imagePlaceholder": "Расм юклаш",
+    "imageUploading": "Юкланмоқда...",
+    "belowCost": "Тан нархдан паст сотилмасин",
+    "addVariants": "Қўшимча вариантлар (ранг/размер/ҳажм)",
+    "variant": "Вариант {index}",
+    "variantName": "Вариант номи",
+    "variantNamePlaceholder": "Масалан: \"Оқ\"",
+    "variantsHint": "Нарх, штрих код ва расм ҳар бир вариант учун пастда киритилади",
+    "addVariant": "Вариант қўшиш",
+    "finishVariants": "Вариантларни якунлаш",
+    "cancelVariants": "Бекор қилиш",
+    "editVariants": "Вариантларни таҳрирлаш",
+    "finishHint": "Вариантларни якунламагунча бошқа товар қўша олмайсиз.",
+    "variantsCount": "{count} та вариант",
+    "addRow": "Янги товар қўшиш",
+    "maxRows": "Энг кўпи билан {count} та товар қўшиш мумкин",
+    "removeRow": "Товарни ўчириш",
+    "removeVariant": "Вариантни ўчириш",
+    "generate": "Автоматик яратиш",
+    "noCurrency": "Валюта топилмади",
+    "removeImage": "Расмни олиб ташлаш"
+  }
+}

@@ -1,0 +1,182 @@
+{
+  "common": {
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "search": "Поиск",
+    "loading": "Загрузка...",
+    "comingSoon": "Эта страница скоро будет готова",
+    "clear": "Очистить"
+  },
+  "errors": {
+    "network": "Не удалось подключиться к серверу. Проверьте интернет.",
+    "server": "Ошибка сервера. Попробуйте позже.",
+    "unknown": "Произошла непредвиденная ошибка"
+  },
+  "theme": {
+    "light": "Светлая",
+    "dark": "Тёмная",
+    "system": "Системная"
+  },
+  "login": {
+    "title": "Вход в систему",
+    "subtitle": "Введите email и пароль",
+    "email": "Email",
+    "emailPlaceholder": "name@example.com",
+    "password": "Пароль",
+    "passwordPlaceholder": "Введите пароль",
+    "showPassword": "Показать пароль",
+    "hidePassword": "Скрыть пароль",
+    "submit": "Войти",
+    "submitting": "Входим..."
+  },
+  "validation": {
+    "required": "Поле обязательно для заполнения",
+    "emailInvalid": "Введите корректный email",
+    "passwordMin": "Пароль должен содержать не менее 6 символов",
+    "numberInvalid": "Введите неотрицательное число",
+    "marginNegative": "Маржа не должна быть отрицательной"
+  },
+  "layout": {
+    "actions": {
+      "notifications": "Уведомления",
+      "profile": "Профиль",
+      "logout": "Выйти"
+    },
+    "footer": {
+      "fullscreen": "Полный экран",
+      "calendar": "Календарь",
+      "calculator": "Калькулятор",
+      "addTab": "Добавить новую корзину"
+    },
+    "loadingMenu": "Загрузка меню",
+    "user": {
+      "theme": "Тема",
+      "language": "Язык",
+      "roles": {
+        "BUSINESS_OWNER": "Владелец центра"
+      }
+    },
+    "menu": {
+      "open": "Открыть меню",
+      "close": "Закрыть меню",
+      "loading": "Загрузка меню"
+    }
+  },
+  "product": {
+    "searchPlaceholder": "Название товара, артикул или штрихкод...",
+    "filter": "Фильтр",
+    "filtersReset": "Сбросить фильтры",
+    "filters": {
+      "stock_id": "По складу",
+      "supplier_id": "По поставщику",
+      "unit_id": "По единице",
+      "shelf_number_id": "По номеру полки",
+      "available_image": "Изображение",
+      "in_stock": "Остаток",
+      "available_limit": "Лимит",
+      "available_barcode": "Штрихкод"
+    },
+    "filtersAll": {
+      "stock_id": "Все склады",
+      "supplier_id": "Все поставщики",
+      "unit_id": "Все единицы",
+      "shelf_number_id": "Все полки"
+    },
+    "filterValues": {
+      "all": "Все",
+      "yes": "Есть",
+      "no": "Нет"
+    },
+    "add": "Добавить товар",
+    "addMenu": {
+      "manual": "Добавить вручную",
+      "import": "Импорт из Excel",
+      "template": "Скачать шаблон Excel"
+    },
+    "export": "Скачать (CSV)",
+    "totalCount": "Всего",
+    "totalCost": "Себестоимость",
+    "columns": {
+      "product": "Товар",
+      "limit": "Лимит",
+      "cost": "Себестоимость",
+      "wholesale": "Оптовая цена",
+      "retail": "Цена продажи",
+      "article": "Артикул",
+      "quantity": "Количество",
+      "unit": "Ед. изм.",
+      "shelf": "Номер полки",
+      "stock": "Склад",
+      "supplier": "Поставщик",
+      "actions": "Действия",
+      "image": "Изображение",
+      "margin": "Маржа %",
+      "barcode": "Штрихкод"
+    },
+    "columnsSettings": "Настройка столбцов",
+    "variantsCount": "Вариантов: {count}",
+    "limitBadge": "Лимит",
+    "selectAll": "Выбрать все",
+    "selectRow": "Выбрать строку",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "deleteTitle": "Удалить товар",
+    "deleteVariantTitle": "Удалить вариант",
+    "deleteDescription": "\"{name}\" будет удалён. Это действие нельзя отменить.",
+    "deleteError": "Не удалось удалить. Попробуйте ещё раз.",
+    "empty": "Товары не найдены",
+    "loading": "Загрузка товаров",
+    "loadError": "Не удалось загрузить товары.",
+    "retry": "Повторить",
+    "limit": "Лимит",
+    "previous": "Предыдущая страница",
+    "next": "Следующая страница",
+    "page": "Номер страницы"
+  },
+  "productCreate": {
+    "title": "Новый товар",
+    "description": "В базе будет создана новая карточка товара. Остаток вводится через «Приход товара».",
+    "back": "Назад",
+    "save": "Сохранить",
+    "saving": "Сохранение...",
+    "saved": "Товары сохранены",
+    "roundPrices": "Округлять цены (до 1000 сум)",
+    "name": "Название товара",
+    "namePlaceholder": "Введите название товара",
+    "unit": "Единица",
+    "limit": "Лимит",
+    "boxQuantity": "Количество в коробке",
+    "cost": "Себестоимость",
+    "wholesale": "Оптовая цена",
+    "retail": "Цена продажи",
+    "costPlus": "Себестоимость + %",
+    "barcode": "Штрихкод",
+    "barcodePlaceholder": "Штрихкод",
+    "article": "Артикул",
+    "articlePlaceholder": "Артикул",
+    "image": "Изображение",
+    "imagePlaceholder": "Загрузить фото",
+    "imageUploading": "Загрузка...",
+    "belowCost": "Не продавать ниже себестоимости",
+    "addVariants": "Дополнительные варианты (цвет/размер/объём)",
+    "variant": "Вариант {index}",
+    "variantName": "Название варианта",
+    "variantNamePlaceholder": "Например: «Белый»",
+    "variantsHint": "Цена, штрихкод и изображение вводятся ниже для каждого варианта",
+    "addVariant": "Добавить вариант",
+    "finishVariants": "Завершить варианты",
+    "cancelVariants": "Отмена",
+    "editVariants": "Изменить варианты",
+    "finishHint": "Пока варианты не завершены, добавить другой товар нельзя.",
+    "variantsCount": "Вариантов: {count}",
+    "addRow": "Добавить товар",
+    "maxRows": "Можно добавить не более {count} товаров",
+    "removeRow": "Удалить товар",
+    "removeVariant": "Удалить вариант",
+    "generate": "Сгенерировать",
+    "noCurrency": "Валюта не найдена",
+    "removeImage": "Удалить изображение"
+  }
+}
