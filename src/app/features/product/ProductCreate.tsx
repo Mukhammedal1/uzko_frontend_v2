@@ -3,7 +3,7 @@
 import { ArrowLeft, Check, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/router";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useFieldArray, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -21,7 +21,13 @@ import { useMainCurrencyQuery } from "@/rest/query/currency/currency.query";
 import { useCreateProductsMutation } from "@/rest/query/product/product.query";
 import { useUnitsQuery } from "@/rest/query/unit/unit.query";
 import type { ProductCreateFormValues } from "@/types/product.types";
-import { buildCreatePayload, createEmptyRow } from "@/utils/product-create";
+import {
+  buildCreatePayload,
+  createEmptyRow,
+  parseNumber,
+  percentFromPrice,
+  roundPrice,
+} from "@/utils/product-create";
 import { productCreateSchema } from "@/validate/product/create.zod";
 
 export function ProductCreate() {
@@ -29,7 +35,8 @@ export function ProductCreate() {
   const router = useRouter();
 
   const { options: unitOptions } = useUnitsQuery();
-  const { mainCurrency } = useMainCurrencyQuery();
+  const { mainCurrency, currencyOptions, currencyRates } =
+    useMainCurrencyQuery();
   const createProducts = useCreateProductsMutation();
 
   const form = useZodForm(productCreateSchema, {
@@ -40,6 +47,10 @@ export function ProductCreate() {
     control: form.control,
     name: "rows",
   });
+
+  const unroundedRef = useRef(
+    new Map<string, { price: string; percent: string; rounded: string }>(),
+  );
 
   const roundPrices = useWatch({ control: form.control, name: "roundPrices" });
   const rows = useWatch({ control: form.control, name: "rows" });
@@ -65,7 +76,70 @@ export function ProductCreate() {
   const canAddRow = !limitReached && !hasOpenVariants;
 
   const handleAddRow = () => {
-    if (canAddRow) append(createEmptyRow(defaultUnitId));
+    if (!canAddRow) return;
+
+    const first = form.getValues("rows.0.variants.0");
+    append(createEmptyRow(defaultUnitId, first));
+  };
+
+  const handleRoundChange = (checked: boolean) => {
+    form.setValue("roundPrices", checked, { shouldDirty: true });
+
+    const rateOf = (id: string) =>
+      currencyRates[id || String(mainCurrency?.id ?? "")] ?? 1;
+
+    form.getValues("rows").forEach((row, rowIndex) => {
+      row.variants.forEach((variant, variantIndex) => {
+        const path = `rows.${rowIndex}.variants.${variantIndex}` as const;
+        const costRate = rateOf(variant.purchaseCurrencyId);
+        const prices = [
+          {
+            price: "wholesalePrice",
+            percent: "wholesalePercent",
+            rate: rateOf(variant.wholesaleCurrencyId),
+          },
+          {
+            price: "retailPrice",
+            percent: "retailPercent",
+            rate: rateOf(variant.retailCurrencyId),
+          },
+        ] as const;
+
+        prices.forEach(({ price, percent, rate }) => {
+          const key = `${path}.${price}`;
+          const current = variant[price];
+
+          if (!checked) {
+            const saved = unroundedRef.current.get(key);
+            if (saved && saved.rounded === current) {
+              form.setValue(`${path}.${price}`, saved.price, {
+                shouldDirty: true,
+              });
+              form.setValue(`${path}.${percent}`, saved.percent, {
+                shouldDirty: true,
+              });
+            }
+            unroundedRef.current.delete(key);
+            return;
+          }
+
+          if (current.trim() === "") return;
+
+          const rounded = String(roundPrice(parseNumber(current), rate));
+          unroundedRef.current.set(key, {
+            price: current,
+            percent: variant[percent],
+            rounded,
+          });
+          form.setValue(`${path}.${price}`, rounded, { shouldDirty: true });
+          form.setValue(
+            `${path}.${percent}`,
+            percentFromPrice(variant.purchasePrice, rounded, costRate, rate),
+            { shouldDirty: true },
+          );
+        });
+      });
+    });
   };
 
   const handleSubmit = form.handleSubmit((values: ProductCreateFormValues) => {
@@ -80,7 +154,6 @@ export function ProductCreate() {
 
     createProducts.mutate(buildCreatePayload(values, mainCurrency.id), {
       onSuccess: () => {
-        toast.success(t("saved"));
         router.push(PRODUCTS_LIST_PATH);
       },
     });
@@ -93,17 +166,19 @@ export function ProductCreate() {
       onSubmit={handleSubmit}
     >
       <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border bg-card">
-        <header className="flex shrink-0 flex-wrap items-start justify-between gap-3 border-b p-3 sm:p-4">
-          <div className="flex min-w-0 flex-col gap-1">
+        <header className="flex shrink-0 flex-wrap items-start justify-between gap-3 border-b px-3 py-2 sm:px-4 sm:py-3">
+          <div className="flex min-w-0 flex-col gap-0.5">
             <div className="flex items-center gap-2">
               <Switch
                 id="product-create-round"
+                className="cursor-pointer"
                 checked={roundPrices}
-                onCheckedChange={(checked) =>
-                  form.setValue("roundPrices", checked, { shouldDirty: true })
-                }
+                onCheckedChange={handleRoundChange}
               />
-              <Label htmlFor="product-create-round" className="font-normal">
+              <Label
+                htmlFor="product-create-round"
+                className="cursor-pointer font-normal"
+              >
                 {t("roundPrices")}
               </Label>
             </div>
@@ -132,7 +207,7 @@ export function ProductCreate() {
           </div>
         </header>
 
-        <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden p-4 pb-6">
+        <div className="relative min-h-0 flex-1 overflow-y-auto overflow-x-hidden p-4 pb-6">
           <div className="flex flex-col gap-4">
             {fields.map((field, index) => (
               <ProductCreateRow
@@ -140,7 +215,9 @@ export function ProductCreate() {
                 form={form}
                 index={index}
                 unitOptions={unitOptions}
-                currencyCode={mainCurrency?.code ?? ""}
+                currencyOptions={currencyOptions}
+                currencyRates={currencyRates}
+                defaultCurrencyId={mainCurrency ? String(mainCurrency.id) : ""}
                 canRemove={fields.length > 1}
                 corner={
                   index === fields.length - 1 ? (

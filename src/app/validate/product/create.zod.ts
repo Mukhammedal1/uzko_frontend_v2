@@ -27,19 +27,25 @@ const requiredNumber = z
   .refine(isNonNegative, "validation.numberInvalid");
 
 export const productVariantSchema = z.object({
+  id: z.number().nullable(),
   name: z.string().trim(),
   limit: optionalNumber,
   boxQuantity: optionalNumber,
-  purchasePrice: requiredNumber,
+  purchasePrice: optionalNumber,
+  purchaseCurrencyId: z.string(),
   wholesalePrice: optionalNumber,
+  wholesaleCurrencyId: z.string(),
   wholesalePercent: margin,
   retailPrice: requiredNumber,
+  retailCurrencyId: z.string(),
   retailPercent: margin,
   allowBelowCost: z.boolean(),
-  barcode: z.string().trim(),
+  barcodes: z.array(z.string()),
   article: z.string().trim(),
   fileId: z.number().nullable(),
   fileName: z.string(),
+  stockId: z.string(),
+  shelfId: z.string(),
 });
 
 export const productRowSchema = z

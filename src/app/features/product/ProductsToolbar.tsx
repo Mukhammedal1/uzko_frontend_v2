@@ -13,6 +13,7 @@ import {
 } from "@/component/ui/popover";
 import { BaseSelect } from "@/component/base/select/BaseSelect";
 import { ProductsAddMenu } from "@/features/product/ProductsAddMenu";
+import { ProductsBulkMenu } from "@/features/product/ProductsBulkMenu";
 import { useProductFilterOptions } from "@/composable/useProductFilterOptions";
 import {
   PRODUCTS_BOOL_FILTER_KEYS,
@@ -35,6 +36,7 @@ type ProductsToolbarProps = {
   total: number;
   costTotals: { currency: string; amount: number }[];
   exportCount: number;
+  selectedCount: number;
   onSearchChange: (value: string) => void;
   onFilterChange: (key: ProductFilterKey, value: string) => void;
   onFiltersReset: () => void;
@@ -42,6 +44,11 @@ type ProductsToolbarProps = {
   onAddManual: () => void;
   onAddImport: () => void;
   onAddTemplate: () => void;
+  onBulkEdit: () => void;
+  onBulkMerge: () => void;
+  onBulkDiscount: () => void;
+  onBulkWriteOff: () => void;
+  onBulkDelete: () => void;
 };
 
 export function ProductsToolbar({
@@ -50,6 +57,7 @@ export function ProductsToolbar({
   total,
   costTotals,
   exportCount,
+  selectedCount,
   onSearchChange,
   onFilterChange,
   onFiltersReset,
@@ -57,6 +65,11 @@ export function ProductsToolbar({
   onAddManual,
   onAddImport,
   onAddTemplate,
+  onBulkEdit,
+  onBulkMerge,
+  onBulkDiscount,
+  onBulkWriteOff,
+  onBulkDelete,
 }: ProductsToolbarProps) {
   const t = useTranslations("product");
   const tCommon = useTranslations("common");
@@ -92,6 +105,17 @@ export function ProductsToolbar({
           onChange={onSearchChange}
         />
       </div>
+
+      {selectedCount > 0 ? (
+        <ProductsBulkMenu
+          count={selectedCount}
+          onEdit={onBulkEdit}
+          onMerge={onBulkMerge}
+          onDiscount={onBulkDiscount}
+          onWriteOff={onBulkWriteOff}
+          onDelete={onBulkDelete}
+        />
+      ) : null}
 
       <Popover open={filterOpen} onOpenChange={setFilterOpen}>
         <PopoverTrigger

@@ -2,10 +2,22 @@
 
 import { ChevronRight, ImageOff, TriangleAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 
+import { BaseBadgeShelf } from "@/component/base/badge/BaseBadgeShelf";
+import {
+  BaseTableBody,
+  BaseTableCell,
+  BaseTableCol,
+  BaseTableColGroup,
+  BaseTableHead,
+  BaseTableHeadCell,
+  BaseTableRoot,
+  BaseTableRow,
+} from "@/component/base/table/BaseTableParts";
 import { BaseButtonDelete } from "@/component/base/button/BaseButtonDelete";
 import { BaseButtonEdit } from "@/component/base/button/BaseButtonEdit";
+import { BaseImagePreview } from "@/component/base/image/BaseImagePreview";
 import { Button } from "@/component/ui/button";
 import { Checkbox } from "@/component/ui/checkbox";
 import {
@@ -37,10 +49,12 @@ type ProductsTableProps = {
   expanded: Set<number>;
   closing: Set<number>;
   columns: ProductColumnVisibility;
-  onToggleSelect: (key: string) => void;
+  onToggleProduct: (product: ProductRow) => void;
+  onToggleVariant: (product: ProductRow, variantId: number) => void;
   onToggleAll: (checked: boolean) => void;
   onToggleExpand: (id: number) => void;
   onColumnChange: (key: ProductColumnKey, checked: boolean) => void;
+  onEdit: (productId: number, variantId?: number) => void;
   onDelete: (target: ProductDeleteTarget) => void;
 };
 
@@ -58,18 +72,44 @@ const rowExit =
   "animate-out fade-out slide-out-to-top-1 fill-mode-forwards duration-150 motion-reduce:animate-none";
 
 const lowBadge =
-  "inline-flex shrink-0 items-center gap-1 rounded-full border border-amber-300 bg-amber-50 px-2 py-0.5 text-sm font-normal text-amber-800 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-300";
+  "inline-flex shrink-0 items-center gap-0.5 rounded-full border border-amber-300 bg-amber-50 px-1.5 py-0.5 text-[11px] leading-4 font-normal text-amber-800 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-300";
 
-function Thumb({ src }: { src: string | null }) {
-  return (
-    <span className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-md border bg-muted text-muted-foreground">
-      {src ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={src} alt="" className="size-full object-cover" />
-      ) : (
+function Thumb({
+  src,
+  label,
+  onPreview,
+}: {
+  src: string | null;
+  label: string;
+  onPreview: (src: string, label: string) => void;
+}) {
+  const box =
+    "flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-md border bg-muted text-muted-foreground";
+
+  if (!src) {
+    return (
+      <span className={box}>
         <ImageOff className="size-3.5" />
+      </span>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      className={cn(
+        box,
+        "cursor-zoom-in outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
       )}
-    </span>
+      onClick={(event) => {
+        event.stopPropagation();
+        onPreview(src, label);
+      }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src} alt="" className="size-full object-cover" />
+    </button>
   );
 }
 
@@ -106,8 +146,14 @@ function Money({
   );
 }
 
+const getBarcodes = (variant?: ProductVariantRow) =>
+  variant ? variant.barcodes.filter(Boolean) : [];
+
 const getBarcodeText = (variant?: ProductVariantRow) =>
-  variant ? variant.barcodes.filter(Boolean).join(", ") : "";
+  getBarcodes(variant)[0] ?? "";
+
+const getBarcodeTitle = (variant?: ProductVariantRow) =>
+  getBarcodes(variant).join(", ");
 
 const dash = <span className="text-muted-foreground">—</span>;
 
@@ -117,14 +163,20 @@ export function ProductsTable({
   expanded,
   closing,
   columns,
-  onToggleSelect,
+  onToggleProduct,
+  onToggleVariant,
   onToggleAll,
   onToggleExpand,
   onColumnChange,
+  onEdit,
   onDelete,
 }: ProductsTableProps) {
   const t = useTranslations("product");
-  const tCommon = useTranslations("common");
+  const [preview, setPreview] = useState<{ src: string; label: string } | null>(
+    null,
+  );
+  const openPreview = (src: string, label: string) =>
+    setPreview({ src, label });
 
   const visibleKeys = PRODUCTS_TABLE_COLUMN_KEYS.filter((key) => columns[key]);
   const weightSum =
@@ -152,31 +204,31 @@ export function ProductsTable({
     switch (key) {
       case "limit":
         return (
-          <td key={key} className={base}>
+          <BaseTableCell key={key} className={base}>
             <span
               className={cn(
-                "inline-flex max-w-full whitespace-nowrap rounded-md px-2 py-1 text-sm font-medium",
+                "inline-flex max-w-full items-center whitespace-nowrap rounded-md border px-1.5 py-0.5 text-[11px] leading-4 font-medium",
                 low
-                  ? "border border-amber-300 bg-amber-50 text-amber-800 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-300"
-                  : "bg-muted",
+                  ? "border-amber-300 bg-amber-50 text-amber-800 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-300"
+                  : "border-transparent bg-muted",
               )}
             >
               {formatNumber(variant.alertQuantity)} {unit}
             </span>
-          </td>
+          </BaseTableCell>
         );
       case "cost":
         return (
-          <td key={key} className={base}>
+          <BaseTableCell key={key} className={base}>
             <Money
               value={variant.purchasePrice}
               currency={variant.purchaseCurrency}
             />
-          </td>
+          </BaseTableCell>
         );
       case "wholesale":
         return (
-          <td key={key} className={base}>
+          <BaseTableCell key={key} className={base}>
             <Money
               value={variant.wholesalePrice}
               currency={variant.wholesaleCurrency}
@@ -184,27 +236,27 @@ export function ProductsTable({
                 columns.margin ? variant.wholesalePercentage : undefined
               }
             />
-          </td>
+          </BaseTableCell>
         );
       case "retail":
         return (
-          <td key={key} className={base}>
+          <BaseTableCell key={key} className={base}>
             <Money
               value={variant.retailPrice}
               currency={variant.retailCurrency}
               percentage={columns.margin ? variant.retailPercentage : undefined}
             />
-          </td>
+          </BaseTableCell>
         );
       case "article":
         return (
-          <td key={key} className={cn(base, "whitespace-nowrap text-center")}>
-            {variant.article ? `#${variant.article.replace(/^#/, "")}` : dash}
-          </td>
+          <BaseTableCell key={key} className={cn(base, "whitespace-nowrap text-center")}>
+            {variant.article || dash}
+          </BaseTableCell>
         );
       case "quantity":
         return (
-          <td
+          <BaseTableCell
             key={key}
             className={cn(
               base,
@@ -213,31 +265,33 @@ export function ProductsTable({
             )}
           >
             {formatNumber(variant.quantity)}
-          </td>
+          </BaseTableCell>
         );
       case "unit":
         return (
-          <td key={key} className={cn(base, "text-center")}>
+          <BaseTableCell key={key} className={cn(base, "text-center")}>
             {unit || dash}
-          </td>
+          </BaseTableCell>
         );
       case "shelf":
         return (
-          <td key={key} className={cn(base, "truncate text-center")}>
-            {variant.shelf || dash}
-          </td>
+          <BaseTableCell key={key} className={cn(base, "text-center")}>
+            <div className="flex items-center justify-center">
+              {variant.shelf ? <BaseBadgeShelf label={variant.shelf} /> : dash}
+            </div>
+          </BaseTableCell>
         );
       case "stock":
         return (
-          <td key={key} className={cn(base, "truncate text-center")}>
+          <BaseTableCell key={key} className={cn(base, "truncate text-center")}>
             {variant.stock || dash}
-          </td>
+          </BaseTableCell>
         );
       case "supplier":
         return (
-          <td key={key} className={cn(base, "truncate text-center")}>
+          <BaseTableCell key={key} className={cn(base, "truncate text-center")}>
             {variant.supplier || dash}
-          </td>
+          </BaseTableCell>
         );
       default:
         return null;
@@ -260,43 +314,45 @@ export function ProductsTable({
     );
   };
 
-  const renderActions = (target: ProductDeleteTarget) => (
-    <td
+  const renderActions = (target: ProductDeleteTarget, productId: number) => (
+    <BaseTableCell
       className={cell}
       onClick={(event) => event.stopPropagation()}
     >
       <div className="flex justify-center gap-1.5">
         <BaseButtonEdit
           label={t("edit")}
-          title={tCommon("comingSoon")}
-          disabled
+          onClick={() =>
+            onEdit(productId, target.kind === "variant" ? target.id : undefined)
+          }
         />
         <BaseButtonDelete
           label={t("delete")}
           onClick={() => onDelete(target)}
         />
       </div>
-    </td>
+    </BaseTableCell>
   );
 
   const renderFiller = () =>
     visibleKeys.length > 0 ? (
-      <td className={cn(cell, fadeIn)} colSpan={visibleKeys.length} />
+      <BaseTableCell className={cn(cell, fadeIn)} colSpan={visibleKeys.length} />
     ) : null;
 
   return (
-    <table className="w-full table-fixed border-collapse">
-      <colgroup>
-        <col style={{ width: `${PRODUCTS_SELECT_COLUMN_WIDTH}%` }} />
-        <col style={{ width: toWidth(PRODUCTS_NAME_COLUMN_WEIGHT) }} />
+    <>
+    <BaseTableRoot className="w-full table-fixed border-collapse">
+      <BaseTableColGroup>
+        <BaseTableCol style={{ width: `${PRODUCTS_SELECT_COLUMN_WIDTH}%` }} />
+        <BaseTableCol style={{ width: toWidth(PRODUCTS_NAME_COLUMN_WEIGHT) }} />
         {visibleKeys.map((key) => (
-          <col key={key} style={{ width: toWidth(PRODUCTS_COLUMN_WEIGHTS[key]) }} />
+          <BaseTableCol key={key} style={{ width: toWidth(PRODUCTS_COLUMN_WEIGHTS[key]) }} />
         ))}
-        <col style={{ width: `${PRODUCTS_ACTIONS_COLUMN_WIDTH}%` }} />
-      </colgroup>
-      <thead>
-        <tr>
-          <th className={cn(headCell, "px-0 text-center")}>
+        <BaseTableCol style={{ width: `${PRODUCTS_ACTIONS_COLUMN_WIDTH}%` }} />
+      </BaseTableColGroup>
+      <BaseTableHead>
+        <BaseTableRow>
+          <BaseTableHeadCell className={cn(headCell, "px-0 text-center")}>
             <Checkbox
               className="mx-auto"
               checked={allSelected}
@@ -304,22 +360,22 @@ export function ProductsTable({
               aria-label={t("selectAll")}
               onCheckedChange={(checked) => onToggleAll(Boolean(checked))}
             />
-          </th>
-          <th className={headCell}>{t("columns.product")}</th>
+          </BaseTableHeadCell>
+          <BaseTableHeadCell className={headCell}>{t("columns.product")}</BaseTableHeadCell>
           {visibleKeys.map((key) => {
             const label = t(`columns.${key}`);
 
             return (
-              <th
+              <BaseTableHeadCell
                 key={key}
                 title={label}
                 className={cn(headCell, "text-center")}
               >
                 {label}
-              </th>
+              </BaseTableHeadCell>
             );
           })}
-          <th className={cn(headCell, "text-center")}>
+          <BaseTableHeadCell className={cn(headCell, "text-center")}>
             <span className="flex items-center justify-center gap-1">
               <span className="truncate">{t("columns.actions")}</span>
               <ProductsColumnsMenu
@@ -327,10 +383,10 @@ export function ProductsTable({
                 onColumnChange={onColumnChange}
               />
             </span>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
+          </BaseTableHeadCell>
+        </BaseTableRow>
+      </BaseTableHead>
+      <BaseTableBody>
         {products.map((product) => {
           const multi = product.variants.length > 1;
           const first = product.variants[0];
@@ -346,7 +402,7 @@ export function ProductsTable({
 
           return (
             <Fragment key={product.id}>
-              <tr
+              <BaseTableRow
                 onClick={multi ? () => onToggleExpand(product.id) : undefined}
                 className={cn(
                   "h-14 cursor-pointer border-b transition-colors hover:bg-muted/50",
@@ -354,34 +410,41 @@ export function ProductsTable({
                   open && "bg-muted/30",
                 )}
               >
-                <td
+                <BaseTableCell
                   className={cn(cell, "px-0 text-center")}
                   onClick={(event) => event.stopPropagation()}
                 >
                   <Checkbox
                     className="mx-auto"
                     checked={productSelected(product)}
-                    aria-label={t("selectRow")}
-                    onCheckedChange={() =>
-                      onToggleSelect(getProductSelectionKey(product.id))
+                    indeterminate={
+                      !productSelected(product) &&
+                      product.variants.some((variant) =>
+                        selected.has(getVariantSelectionKey(variant.id)),
+                      )
                     }
+                    aria-label={t("selectRow")}
+                    onCheckedChange={() => onToggleProduct(product)}
                   />
-                </td>
-                <td className={cell}>
+                </BaseTableCell>
+                <BaseTableCell className={cell}>
                   <div className="flex min-w-0 items-center gap-2">
                     {columns.image ? (
                       <span
-                        aria-hidden="true"
                         className={cn(
-                          "shrink-0 transition-opacity duration-150 motion-reduce:transition-none",
-                          open && "opacity-0",
+                          "shrink-0",
+                          open && "hidden",
                         )}
                       >
-                        <Thumb src={first?.imageUrl ?? product.imageUrl} />
+                        <Thumb
+                          src={first?.imageUrl ?? product.imageUrl}
+                          label={product.name}
+                          onPreview={openPreview}
+                        />
                       </span>
                     ) : null}
-                    <div className="flex min-w-0 flex-col leading-tight">
-                      <span className="flex h-5 min-w-0 items-center gap-1.5 font-medium">
+                    <div className="flex min-w-0 flex-col text-left leading-tight">
+                      <span className="flex h-5 min-w-0 items-center gap-1.5 text-base font-medium">
                         {multi ? (
                           <Button
                             type="button"
@@ -408,7 +471,7 @@ export function ProductsTable({
                         </span>
                         {lowForRow ? (
                           <span className={lowBadge}>
-                            <TriangleAlert className="size-3" />
+                            <TriangleAlert className="size-2.5" />
                             {t("limitBadge")}
                           </span>
                         ) : null}
@@ -419,15 +482,15 @@ export function ProductsTable({
                         </span>
                       ) : columns.barcode && getBarcodeText(first) ? (
                         <span
-                          className="truncate text-sm leading-4 text-muted-foreground"
-                          title={getBarcodeText(first)}
+                          className="truncate text-xs leading-4 text-muted-foreground"
+                          title={getBarcodeTitle(first)}
                         >
                           {getBarcodeText(first)}
                         </span>
                       ) : null}
                     </div>
                   </div>
-                </td>
+                </BaseTableCell>
                 {multi && open ? (
                   renderFiller()
                 ) : first ? (
@@ -437,12 +500,15 @@ export function ProductsTable({
                 ) : (
                   renderFiller()
                 )}
-                {renderActions({
-                  kind: "product",
-                  id: product.id,
-                  name: product.name,
-                })}
-              </tr>
+                {renderActions(
+                  {
+                    kind: "product",
+                    id: product.id,
+                    name: product.name,
+                  },
+                  product.id,
+                )}
+              </BaseTableRow>
 
               {showChildren
                 ? product.variants.map((variant) => {
@@ -450,15 +516,15 @@ export function ProductsTable({
                     const low = isLowStock(variant);
 
                     return (
-                      <tr
+                      <BaseTableRow
                         key={variant.id}
                         className={cn(
-                          "h-14 cursor-pointer border-b bg-muted/20 transition-colors hover:bg-muted/50",
+                          "h-14 cursor-pointer border-b bg-variant-row transition-colors hover:bg-muted/50",
                           closing.has(product.id) ? rowExit : rowEnter,
                           selected.has(variantKey) && "bg-muted/60",
                         )}
                       >
-                        <td
+                        <BaseTableCell
                           className={cn(cell, "px-0 text-center")}
                           onClick={(event) => event.stopPropagation()}
                         >
@@ -466,16 +532,22 @@ export function ProductsTable({
                             className="mx-auto"
                             checked={selected.has(variantKey)}
                             aria-label={t("selectRow")}
-                            onCheckedChange={() => onToggleSelect(variantKey)}
+                            onCheckedChange={() =>
+                              onToggleVariant(product, variant.id)
+                            }
                           />
-                        </td>
-                        <td className={cell}>
+                        </BaseTableCell>
+                        <BaseTableCell className={cell}>
                           <div className="flex min-w-0 items-center gap-2 pl-4">
                             {columns.image ? (
-                              <Thumb src={variant.imageUrl} />
+                              <Thumb
+                                src={variant.imageUrl}
+                                label={variant.name || product.name}
+                                onPreview={openPreview}
+                              />
                             ) : null}
-                            <div className="flex min-w-0 flex-col leading-tight">
-                              <span className="flex min-w-0 items-center gap-2 font-medium">
+                            <div className="flex min-w-0 flex-col text-left leading-tight">
+                              <span className="flex min-w-0 items-center gap-2 text-base font-medium">
                                 <span
                                   className="truncate"
                                   title={variant.name || product.name}
@@ -484,36 +556,46 @@ export function ProductsTable({
                                 </span>
                                 {low ? (
                                   <span className={lowBadge}>
-                                    <TriangleAlert className="size-3" />
+                                    <TriangleAlert className="size-2.5" />
                                     {t("limitBadge")}
                                   </span>
                                 ) : null}
                               </span>
                               {columns.barcode && getBarcodeText(variant) ? (
                                 <span
-                                  className="truncate text-sm leading-4 text-muted-foreground"
-                                  title={getBarcodeText(variant)}
+                                  className="truncate text-xs leading-4 text-muted-foreground"
+                                  title={getBarcodeTitle(variant)}
                                 >
                                   {getBarcodeText(variant)}
                                 </span>
                               ) : null}
                             </div>
                           </div>
-                        </td>
+                        </BaseTableCell>
                         {renderVariantCells(variant, product.unit, false)}
-                        {renderActions({
-                          kind: "variant",
-                          id: variant.id,
-                          name: variant.name || product.name,
-                        })}
-                      </tr>
+                        {renderActions(
+                          {
+                            kind: "variant",
+                            id: variant.id,
+                            name: variant.name || product.name,
+                          },
+                          product.id,
+                        )}
+                      </BaseTableRow>
                     );
                   })
                 : null}
             </Fragment>
           );
         })}
-      </tbody>
-    </table>
+      </BaseTableBody>
+    </BaseTableRoot>
+      <BaseImagePreview
+        open={preview !== null}
+        src={preview?.src ?? null}
+        title={preview?.label ?? ""}
+        onClose={() => setPreview(null)}
+      />
+    </>
   );
 }

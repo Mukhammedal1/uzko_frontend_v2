@@ -48,7 +48,7 @@
       "fullscreen": "Тўлиқ экран",
       "calendar": "Календарь",
       "calculator": "Калькулятор",
-      "addTab": "Янги саватча қўшиш"
+      "backspace": "Ўчириш"
     },
     "loadingMenu": "Меню юкланмоқда",
     "user": {
@@ -96,6 +96,14 @@
       "template": "Excel шаблонини юклаб олиш"
     },
     "export": "Юклаб олиш (CSV)",
+    "bulk": {
+      "trigger": "Танланган: {count}",
+      "edit": "Маҳсулотларни таҳрирлаш",
+      "merge": "Товарни агентга бирлаштириш",
+      "discount": "Чегирма",
+      "writeOff": "Ҳисобдан чиқариш",
+      "delete": "Базадан ўчириш"
+    },
     "totalCount": "Жами сони",
     "totalCost": "Тан нарх жами",
     "columns": {
@@ -125,6 +133,8 @@
     "deleteTitle": "Товарни ўчириш",
     "deleteVariantTitle": "Вариантни ўчириш",
     "deleteDescription": "\"{name}\" ўчирилади. Бу амални қайтариб бўлмайди.",
+    "deleteBulkTitle": "Танланганларни ўчириш",
+    "deleteBulkDescription": "Танланган {count} та товар ўчирилади. Бу амални қайтариб бўлмайди.",
     "deleteError": "Ўчириб бўлмади. Қайта уриниб кўринг.",
     "empty": "Товар топилмади",
     "loading": "Товарлар юкланмоқда",
@@ -154,6 +164,9 @@
     "costPlus": "Тан нарх + %",
     "barcode": "Штрих код",
     "barcodePlaceholder": "Штрих код",
+    "barcodesCount": "{count} та код",
+    "barcodeScanMore": "Яна сканерланг...",
+    "removeBarcode": "Кодни ўчириш",
     "article": "Артикул",
     "articlePlaceholder": "Артикул",
     "image": "Расм",
@@ -178,5 +191,57 @@
     "generate": "Автоматик яратиш",
     "noCurrency": "Валюта топилмади",
     "removeImage": "Расмни олиб ташлаш"
+  },
+  "settingsGeneral": {
+    "tabs": {
+      "stocks": "Омборлар",
+      "expenseTypes": "Харажатлар категорияси",
+      "shelfNumbers": "Полка рақамлари",
+      "currency": "Курсни янгилаш"
+    },
+    "stocks": {
+      "description": "Товар сақлаш учун омбор қўшиш",
+      "placeholder": "Омбор номи...",
+      "deleteTitle": "Омборни ўчириш"
+    },
+    "expenseTypes": {
+      "description": "Кассадан пул чиқариш учун харажатлар категорияси қўшиш",
+      "placeholder": "Харажат категорияси номи...",
+      "deleteTitle": "Категорияни ўчириш"
+    },
+    "shelfNumbers": {
+      "description": "Товарлар қаерда туришини белгилаш учун полка рақам қўшиш",
+      "placeholder": "Полка рақами...",
+      "deleteTitle": "Полка рақамини ўчириш"
+    },
+    "currency": {
+      "description": "Валюталар курсини янгилаш"
+    },
+    "columns": {
+      "id": "ID",
+      "name": "Номи",
+      "symbol": "Белги",
+      "rate": "Курс",
+      "main": "Асосий",
+      "actions": "Амаллар"
+    },
+    "add": "Қўшиш",
+    "empty": "Маълумот топилмади",
+    "deleteDescription": "\"{name}\" ўчирилсинми? Бу амални қайтариб бўлмайди."
+  },
+  "toast": {
+    "created": "Муваффақиятли қўшилди",
+    "updated": "Муваффақиятли янгиланди",
+    "deleted": "Муваффақиятли ўчирилди"
+  },
+  "productEdit": {
+    "title": "Маҳсулотни таҳрирлаш",
+    "description": "Маҳсулот ва унинг вариантларини ўзгартиринг",
+    "bulkTitle": "Танланган маҳсулотларни таҳрирлаш",
+    "bulkDescription": "Танланган маҳсулотлар ва уларнинг вариантларини ўзгартиринг",
+    "stock": "Омбор",
+    "shelf": "Полка рақами",
+    "notFound": "Маҳсулот топилмади",
+    "loading": "Юкланмоқда..."
   }
 }

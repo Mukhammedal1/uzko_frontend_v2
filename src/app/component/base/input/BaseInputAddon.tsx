@@ -3,8 +3,15 @@ import type { ReactNode } from "react";
 import { Button } from "@/component/ui/button";
 import { Input } from "@/component/ui/input";
 import { Label } from "@/component/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/component/ui/select";
 import { cn } from "@/lib/utils";
-import type { NumericOptions } from "@/types/common.types";
+import type { NumericOptions, SelectOption } from "@/types/common.types";
 import { formatNumeric, sanitizeNumeric } from "@/utils/number-input";
 
 type BaseInputAddonProps = {
@@ -13,6 +20,8 @@ type BaseInputAddonProps = {
   value: string;
   placeholder?: string;
   suffix?: string;
+  suffixOptions?: SelectOption[];
+  suffixValue?: string;
   compact?: boolean;
   numeric?: NumericOptions;
   error?: string;
@@ -24,6 +33,7 @@ type BaseInputAddonProps = {
   onChange: (value: string) => void;
   onBlur?: () => void;
   onAction?: () => void;
+  onSuffixChange?: (value: string) => void;
 };
 
 export function BaseInputAddon({
@@ -32,6 +42,8 @@ export function BaseInputAddon({
   value,
   placeholder,
   suffix,
+  suffixOptions,
+  suffixValue = "",
   compact = false,
   numeric,
   error,
@@ -43,7 +55,9 @@ export function BaseInputAddon({
   onChange,
   onBlur,
   onAction,
+  onSuffixChange,
 }: BaseInputAddonProps) {
+  const hasSuffixSelect = Boolean(suffixOptions?.length && onSuffixChange);
   const isNegative = Boolean(numeric?.allowNegative) && value.startsWith("-");
   const alignRight = Boolean(numeric) && numeric?.grouping !== false;
 
@@ -68,7 +82,9 @@ export function BaseInputAddon({
             aria-invalid={error || invalid ? true : undefined}
             className={cn(
               compact ? "h-7 px-2" : "h-9",
-              suffix && (compact ? "pr-6" : "pr-12"),
+              hasSuffixSelect
+                ? "pr-11"
+                : suffix && (compact ? "pr-6" : "pr-12"),
               alignRight && "text-right tabular-nums",
               isNegative && "font-medium text-destructive",
             )}
@@ -81,7 +97,38 @@ export function BaseInputAddon({
             }
             onBlur={onBlur}
           />
-          {suffix ? (
+          {hasSuffixSelect ? (
+            <Select
+              value={suffixValue}
+              items={suffixOptions}
+              disabled={disabled}
+              onValueChange={(next) => {
+                if (typeof next === "string") onSuffixChange?.(next);
+              }}
+            >
+              <SelectTrigger
+                aria-label={label}
+                className="absolute top-1/2 right-1 h-6 w-auto -translate-y-1/2 gap-0.5 border-0 bg-transparent px-1.5 py-0 text-xs font-semibold text-muted-foreground shadow-none [&_svg]:hidden data-[size=default]:h-6 dark:bg-transparent dark:hover:bg-transparent"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent
+                align="end"
+                alignItemWithTrigger={false}
+                className="w-auto min-w-20 p-1"
+              >
+                {suffixOptions?.map((option) => (
+                  <SelectItem
+                    key={option.value}
+                    value={option.value}
+                    className="py-1.5 pl-2.5"
+                  >
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          ) : suffix ? (
             <span className={cn(
                 "pointer-events-none absolute top-1/2 -translate-y-1/2 text-xs font-semibold text-muted-foreground",
                 compact ? "right-2" : "right-3",

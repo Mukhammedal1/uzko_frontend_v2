@@ -125,9 +125,33 @@ export const PRODUCT_CREATE_MAX_ROWS = 300;
 
 export const PRODUCT_CREATE_ROUND_STEP = 1000;
 
+export const PRODUCT_ARTICLE_PREFIX = "UZKO-";
+
+export const PRODUCT_BARCODE_PREFIX = "UZKO-";
+
+export const PRODUCT_CODE_MIN = 100000;
+
+export const PRODUCT_CODE_MAX = 999999;
+
+export const PRODUCT_DEFAULT_BOX_QUANTITY = 1;
+
+export const PRICE_PERCENT_KEYS = {
+  wholesalePrice: "wholesalePercent",
+  retailPrice: "retailPercent",
+} as const;
+
+export const PRICE_CURRENCY_KEYS = {
+  wholesalePrice: "wholesaleCurrencyId",
+  retailPrice: "retailCurrencyId",
+} as const;
+
 export const PRODUCT_CREATE_PATH = "/product/all-products/create";
 
 export const PRODUCTS_LIST_PATH = "/product/all-products";
+
+export const PRODUCT_EDIT_PATH = "/product/all-products/edit";
+
+export const PRODUCT_BULK_EDIT_QUERY = "items";
 
 export const PRODUCT_CREATE_DEFAULT_UNIT = "dona";
 

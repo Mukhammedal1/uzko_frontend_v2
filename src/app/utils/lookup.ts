@@ -1,3 +1,4 @@
+import type { NamedItem } from "@/types/settings.types";
 import type { SelectOption } from "@/types/common.types";
 import type { AppLocale } from "@/types/i18n.types";
 
@@ -54,5 +55,30 @@ export const normalizeOptions = (
     const id = item.id;
     if (typeof id !== "number" && typeof id !== "string") return [];
     return [{ value: String(id), label: getLabel(item, locale) || String(id) }];
+  });
+};
+
+export const normalizeNamedItems = (
+  raw: unknown,
+  locale: AppLocale,
+): NamedItem[] => {
+  const list = Array.isArray(raw)
+    ? raw
+    : isRecord(raw)
+      ? [raw.data, raw.items, raw.result, raw.rows].find(Array.isArray)
+      : undefined;
+
+  if (!Array.isArray(list)) return [];
+
+  return list.filter(isRecord).flatMap((item) => {
+    const id = item.id;
+    if (typeof id !== "number") return [];
+    return [
+      {
+        id,
+        name: getLabel(item, locale) || String(id),
+        isSystem: item.is_system === true,
+      },
+    ];
   });
 };

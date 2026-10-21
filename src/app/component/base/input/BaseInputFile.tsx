@@ -32,7 +32,7 @@ export function BaseInputFile({
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <div className="flex min-w-0 flex-col gap-1.5">
+    <div className="relative flex min-w-0 flex-col gap-1.5">
       <Label htmlFor={id} className="whitespace-nowrap">
         {label}
       </Label>
@@ -61,12 +61,14 @@ export function BaseInputFile({
             <img
               src={previewUrl}
               alt=""
-              className="size-6 shrink-0 rounded object-cover"
+              className="size-7 shrink-0 rounded object-contain"
             />
           ) : (
             <ImageUp className="shrink-0" />
           )}
-          <span className="truncate">{fileName || placeholder}</span>
+          {previewUrl && !loading ? null : (
+            <span className="truncate">{fileName || placeholder}</span>
+          )}
         </Button>
         {onClear && (previewUrl || fileName) && !loading ? (
           <button

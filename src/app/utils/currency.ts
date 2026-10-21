@@ -1,4 +1,5 @@
 import type { CurrencyMap, MainCurrency } from "@/types/product.types";
+import type { BusinessCurrencyRow } from "@/types/settings.types";
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
@@ -38,19 +39,59 @@ export const normalizeCurrencies = (raw: unknown): CurrencyMap => {
   }, {});
 };
 
-export const pickMainCurrency = (raw: unknown): MainCurrency | null => {
+const toBusinessCurrency = (item: Record<string, unknown>): MainCurrency | null => {
+  const nested = isRecord(item.currency) ? item.currency : null;
+  const id = item.currency_id ?? nested?.id ?? item.id;
+  if (typeof id !== "number") return null;
+
+  const rate = Number(item.rate ?? nested?.rate);
+
+  return {
+    id,
+    code: getCurrencyCode(item) || getCurrencyCode(nested),
+    rate: Number.isFinite(rate) && rate > 0 ? rate : 1,
+  };
+};
+
+const toRecords = (raw: unknown) => {
   const list = Array.isArray(raw)
     ? raw
     : isRecord(raw) && Array.isArray(raw.data)
       ? raw.data
       : [];
 
-  const records = list.filter(isRecord);
-  const main = records.find((item) => item.is_main === true) ?? records[0];
-  if (!main) return null;
-
-  const id = main.currency_id ?? main.id;
-  if (typeof id !== "number") return null;
-
-  return { id, code: getCurrencyCode(main) };
+  return list.filter(isRecord);
 };
+
+export const pickBusinessCurrencies = (raw: unknown): MainCurrency[] =>
+  toRecords(raw).reduce<MainCurrency[]>((result, item) => {
+    const currency = toBusinessCurrency(item);
+    if (currency) result.push(currency);
+    return result;
+  }, []);
+
+export const pickMainCurrency = (raw: unknown): MainCurrency | null => {
+  const records = toRecords(raw);
+  const main = records.find((item) => item.is_main === true) ?? records[0];
+
+  return main ? toBusinessCurrency(main) : null;
+};
+
+export const pickBusinessCurrencyRows = (raw: unknown): BusinessCurrencyRow[] =>
+  toRecords(raw).flatMap((item) => {
+    const nested = isRecord(item.currency) ? item.currency : null;
+    const id = item.currency_id ?? nested?.id ?? item.id;
+    if (typeof id !== "number") return [];
+
+    const rate = Number(item.rate);
+
+    return [
+      {
+        id,
+        name: toText(nested?.name ?? item.name) || getCurrencyCode(item),
+        symbol: toText(nested?.symbol ?? item.symbol),
+        rate: Number.isFinite(rate) ? rate : 0,
+        isMain: item.is_main === true || nested?.is_main === true,
+      },
+    ];
+  });

@@ -14,6 +14,7 @@ import { BaseButtonDelete } from "@/component/base/button/BaseButtonDelete";
 import { BaseInputAddon } from "@/component/base/input/BaseInputAddon";
 import { BaseSelect } from "@/component/base/select/BaseSelect";
 import { Button } from "@/component/ui/button";
+import { cn } from "@/lib/utils";
 import { ProductCreateVariant } from "@/features/product/ProductCreateVariant";
 import type { SelectOption } from "@/types/common.types";
 import type {
@@ -26,7 +27,9 @@ type ProductCreateRowProps = {
   form: UseFormReturn<ProductCreateFormValues, unknown, ProductCreateFormValues>;
   index: number;
   unitOptions: SelectOption[];
-  currencyCode: string;
+  currencyOptions: SelectOption[];
+  currencyRates: Record<string, number>;
+  defaultCurrencyId: string;
   canRemove: boolean;
   corner?: ReactNode;
   onRemove: () => void;
@@ -36,7 +39,9 @@ export function ProductCreateRow({
   form,
   index,
   unitOptions,
-  currencyCode,
+  currencyOptions,
+  currencyRates,
+  defaultCurrencyId,
   canRemove,
   corner,
   onRemove,
@@ -124,8 +129,13 @@ export function ProductCreateRow({
   );
 
   return (
-    <section className="relative flex flex-col gap-2 rounded-xl border bg-card p-3 shadow-sm">
-      <div className="flex items-center justify-between gap-2">
+    <section
+      className={cn(
+        "relative flex flex-col rounded-lg border bg-card px-2.5 py-1.5 shadow-sm",
+        mode === "variants" ? "gap-2" : "gap-1",
+      )}
+    >
+      <div className="mb-1 flex items-center justify-between gap-2">
         <span className="flex size-5 items-center justify-center rounded-full bg-muted text-xs font-semibold">
           {index + 1}
         </span>
@@ -145,7 +155,9 @@ export function ProductCreateRow({
             rowIndex={index}
             variantIndex={0}
             showName={false}
-            currencyCode={currencyCode}
+            currencyOptions={currencyOptions}
+            currencyRates={currencyRates}
+            defaultCurrencyId={defaultCurrencyId}
             leading={
               <>
                 <div className="sm:col-span-2 xl:col-span-1">{nameField}</div>
@@ -157,7 +169,7 @@ export function ProductCreateRow({
             <Button
               type="button"
               variant="ghost"
-              className="h-8 gap-2 px-2 text-primary hover:bg-transparent hover:text-primary hover:underline"
+              className="h-7 gap-2 px-2 text-primary hover:bg-transparent hover:text-primary hover:underline"
               onClick={() => setMode("variants")}
             >
               <Layers />
@@ -197,7 +209,9 @@ export function ProductCreateRow({
                   rowIndex={index}
                   variantIndex={variantIndex}
                   showName
-                  currencyCode={currencyCode}
+                  currencyOptions={currencyOptions}
+                  currencyRates={currencyRates}
+                  defaultCurrencyId={defaultCurrencyId}
                 />
               </div>
             ))}
@@ -208,7 +222,9 @@ export function ProductCreateRow({
               type="button"
               variant="outline"
               className="h-10 gap-2"
-              onClick={() => append(createEmptyVariant())}
+              onClick={() =>
+                append(createEmptyVariant(form.getValues(`${variantsPath}.0`)))
+              }
             >
               <Plus />
               {t("addVariant")}

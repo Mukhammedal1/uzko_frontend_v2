@@ -78,13 +78,23 @@ export type ProductFilterOptions = Record<
   SelectOption[]
 >;
 
-export type ProductDeleteTarget = {
-  kind: "product" | "variant";
-  id: number;
-  name: string;
+export type BulkDeletePayload = {
+  product_ids?: number[];
+  variant_ids?: number[];
 };
 
+export type ProductDeleteTarget =
+  | { kind: "product" | "variant"; id: number; name: string }
+  | { kind: "bulk"; productIds: number[]; variantIds: number[]; count: number };
+
 export type CurrencyMap = Record<number, string>;
+
+export type PriceKey = "wholesalePrice" | "retailPrice";
+
+export type CurrencyKey =
+  | "purchaseCurrencyId"
+  | "wholesaleCurrencyId"
+  | "retailCurrencyId";
 
 export type ProductColumnKey =
   | "limit"
@@ -120,7 +130,7 @@ export type CreateProductVariantPayload = {
   name: string;
   artikul?: string;
   alert_quantity?: number;
-  box_quantity?: number;
+  box_quantity: number;
   allow_below_cost_sale: boolean;
   purchase_price: number;
   purchase_price_currency_id: number;
@@ -132,6 +142,37 @@ export type CreateProductVariantPayload = {
   wholesale_price_percentage?: number;
   file_id?: number;
   barcodes?: string[];
+};
+
+export type VariantWritePayload = Omit<CreateProductVariantPayload, "file_id"> & {
+  file_id?: number | null;
+  stock_id?: number;
+  shelf_number_id?: number;
+};
+
+export type UpsertVariantItem = VariantWritePayload & { id?: number };
+
+export type BulkUpdateProductItem = {
+  id: number;
+  name?: string;
+  unit_id?: number;
+  variants?: UpsertVariantItem[];
+};
+
+export type BulkUpdateProductsPayload = {
+  products: BulkUpdateProductItem[];
+};
+
+export type UpdateProductPayload = {
+  name?: string;
+  unit_id: number;
+};
+
+export type ProductEditSubmit = {
+  productId: number;
+  product: UpdateProductPayload | null;
+  updates: { id: number; payload: VariantWritePayload }[];
+  creates: VariantWritePayload[];
 };
 
 export type CreateProductPayload = {
@@ -151,4 +192,10 @@ export type UploadedFile = {
 export type MainCurrency = {
   id: number;
   code: string;
+  rate: number;
+};
+
+export type ProductBulkTarget = {
+  productId: number;
+  variantIds: number[];
 };

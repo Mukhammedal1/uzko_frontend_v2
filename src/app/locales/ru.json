@@ -48,7 +48,7 @@
       "fullscreen": "Полный экран",
       "calendar": "Календарь",
       "calculator": "Калькулятор",
-      "addTab": "Добавить новую корзину"
+      "backspace": "Удалить символ"
     },
     "loadingMenu": "Загрузка меню",
     "user": {
@@ -96,6 +96,14 @@
       "template": "Скачать шаблон Excel"
     },
     "export": "Скачать (CSV)",
+    "bulk": {
+      "trigger": "Выбрано: {count}",
+      "edit": "Редактировать товары",
+      "merge": "Объединить товар с агентом",
+      "discount": "Скидка",
+      "writeOff": "Списать",
+      "delete": "Удалить из базы"
+    },
     "totalCount": "Всего",
     "totalCost": "Себестоимость",
     "columns": {
@@ -125,6 +133,8 @@
     "deleteTitle": "Удалить товар",
     "deleteVariantTitle": "Удалить вариант",
     "deleteDescription": "\"{name}\" будет удалён. Это действие нельзя отменить.",
+    "deleteBulkTitle": "Удалить выбранное",
+    "deleteBulkDescription": "Выбранные товары ({count} шт.) будут удалены. Это действие нельзя отменить.",
     "deleteError": "Не удалось удалить. Попробуйте ещё раз.",
     "empty": "Товары не найдены",
     "loading": "Загрузка товаров",
@@ -154,6 +164,9 @@
     "costPlus": "Себестоимость + %",
     "barcode": "Штрихкод",
     "barcodePlaceholder": "Штрихкод",
+    "barcodesCount": "Кодов: {count}",
+    "barcodeScanMore": "Сканируйте ещё...",
+    "removeBarcode": "Удалить код",
     "article": "Артикул",
     "articlePlaceholder": "Артикул",
     "image": "Изображение",
@@ -178,5 +191,57 @@
     "generate": "Сгенерировать",
     "noCurrency": "Валюта не найдена",
     "removeImage": "Удалить изображение"
+  },
+  "settingsGeneral": {
+    "tabs": {
+      "stocks": "Склады",
+      "expenseTypes": "Категории расходов",
+      "shelfNumbers": "Номера полок",
+      "currency": "Обновить курс"
+    },
+    "stocks": {
+      "description": "Добавьте склад для хранения товаров",
+      "placeholder": "Название склада...",
+      "deleteTitle": "Удалить склад"
+    },
+    "expenseTypes": {
+      "description": "Добавьте категорию расходов для выдачи денег из кассы",
+      "placeholder": "Название категории расходов...",
+      "deleteTitle": "Удалить категорию"
+    },
+    "shelfNumbers": {
+      "description": "Добавьте номер полки, чтобы указать, где лежат товары",
+      "placeholder": "Номер полки...",
+      "deleteTitle": "Удалить номер полки"
+    },
+    "currency": {
+      "description": "Обновление курса валют"
+    },
+    "columns": {
+      "id": "ID",
+      "name": "Название",
+      "symbol": "Символ",
+      "rate": "Курс",
+      "main": "Основная",
+      "actions": "Действия"
+    },
+    "add": "Добавить",
+    "empty": "Данные не найдены",
+    "deleteDescription": "Удалить «{name}»? Это действие нельзя отменить."
+  },
+  "toast": {
+    "created": "Успешно добавлено",
+    "updated": "Успешно обновлено",
+    "deleted": "Успешно удалено"
+  },
+  "productEdit": {
+    "title": "Редактирование товара",
+    "description": "Измените товар и его варианты",
+    "bulkTitle": "Редактирование выбранных товаров",
+    "bulkDescription": "Измените выбранные товары и их варианты",
+    "stock": "Склад",
+    "shelf": "Номер полки",
+    "notFound": "Товар не найден",
+    "loading": "Загрузка..."
   }
 }

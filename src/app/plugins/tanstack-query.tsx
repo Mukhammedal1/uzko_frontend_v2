@@ -10,6 +10,7 @@ import type { ReactNode } from "react";
 
 import { ApiError } from "@/api/intercept";
 import { useApiErrorToast } from "@/composable/useApiErrorToast";
+import { useApiSuccessToast } from "@/composable/useApiSuccessToast";
 
 const MAX_RETRY = 2;
 
@@ -43,6 +44,7 @@ export const getQueryClient = () => {
 
 function ApiErrorToaster() {
   useApiErrorToast();
+  useApiSuccessToast();
   return null;
 }
 

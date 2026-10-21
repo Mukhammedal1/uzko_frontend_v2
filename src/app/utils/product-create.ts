@@ -1,4 +1,7 @@
-import { PRODUCT_CREATE_ROUND_STEP } from "@/constants/product/product.constants";
+import {
+  PRODUCT_CREATE_ROUND_STEP,
+  PRODUCT_DEFAULT_BOX_QUANTITY,
+} from "@/constants/product/product.constants";
 import type {
   CreateProductPayload,
   CreateProductVariantPayload,
@@ -8,27 +11,38 @@ import type {
   ProductVariantFormValues,
 } from "@/types/product.types";
 
-export const createEmptyVariant = (): ProductVariantFormValues => ({
+export const createEmptyVariant = (
+  margins?: Pick<ProductVariantFormValues, "wholesalePercent" | "retailPercent">,
+): ProductVariantFormValues => ({
+  id: null,
   name: "",
   limit: "",
   boxQuantity: "",
   purchasePrice: "",
+  purchaseCurrencyId: "",
   wholesalePrice: "",
-  wholesalePercent: "",
+  wholesaleCurrencyId: "",
+  wholesalePercent: margins?.wholesalePercent ?? "",
   retailPrice: "",
-  retailPercent: "",
+  retailCurrencyId: "",
+  retailPercent: margins?.retailPercent ?? "",
   allowBelowCost: false,
-  barcode: "",
+  barcodes: [],
   article: "",
   fileId: null,
   fileName: "",
+  stockId: "",
+  shelfId: "",
 });
 
-export const createEmptyRow = (unitId = ""): ProductRowFormValues => ({
+export const createEmptyRow = (
+  unitId = "",
+  margins?: Parameters<typeof createEmptyVariant>[0],
+): ProductRowFormValues => ({
   name: "",
   unitId,
   mode: "single",
-  variants: [createEmptyVariant()],
+  variants: [createEmptyVariant(margins)],
 });
 
 export const parseNumber = (value: string) => {
@@ -40,98 +54,104 @@ const toTwoDecimals = (value: number) => Math.round(value * 100) / 100;
 
 const toText = (value: number) => String(toTwoDecimals(value));
 
+const convert = (amount: number, fromRate: number, toRate: number) =>
+  fromRate > 0 && toRate > 0 ? (amount * fromRate) / toRate : amount;
+
+export const roundPrice = (price: number, rate = 1) => {
+  const step = rate === 1 ? PRODUCT_CREATE_ROUND_STEP : 1;
+  return Math.round(price / step) * step;
+};
+
 export const priceFromPercent = (
   cost: string,
   percent: string,
   round: boolean,
+  costRate = 1,
+  priceRate = 1,
 ) => {
   if (cost.trim() === "" || percent.trim() === "") return "";
 
-  const price = parseNumber(cost) * (1 + parseNumber(percent) / 100);
-  return toText(
-    round
-      ? Math.ceil(price / PRODUCT_CREATE_ROUND_STEP) * PRODUCT_CREATE_ROUND_STEP
-      : price,
-  );
+  const withMargin = parseNumber(cost) * (1 + parseNumber(percent) / 100);
+  const price = convert(withMargin, costRate, priceRate);
+  return toText(round ? roundPrice(price, priceRate) : price);
 };
 
-export const percentFromPrice = (cost: string, price: string) => {
+export const percentFromPrice = (
+  cost: string,
+  price: string,
+  costRate = 1,
+  priceRate = 1,
+) => {
   const costValue = parseNumber(cost);
   if (price.trim() === "" || costValue <= 0) return "";
 
-  return toText((parseNumber(price) / costValue - 1) * 100);
+  const priceInCostCurrency = convert(parseNumber(price), priceRate, costRate);
+  return toText((priceInCostCurrency / costValue - 1) * 100);
 };
-
-const digits = (length: number) =>
-  Array.from({ length }, () => Math.floor(Math.random() * 10));
-
-export const generateBarcode = () => {
-  const body = digits(12);
-  const sum = body.reduce(
-    (total, digit, index) => total + digit * (index % 2 === 0 ? 1 : 3),
-    0,
-  );
-  const check = (10 - (sum % 10)) % 10;
-
-  return [...body, check].join("");
-};
-
-export const generateArticle = () => `UZKO${digits(5).join("")}`;
 
 const optionalPositive = (value: string) => {
   const parsed = parseNumber(value);
   return value.trim() !== "" && parsed > 0 ? toTwoDecimals(parsed) : undefined;
 };
 
-const toVariantPayload = (
+export const toVariantPayload = (
   variant: ProductVariantFormValues,
   fallbackName: string,
-  currencyId: number,
+  defaultCurrencyId: number,
 ): CreateProductVariantPayload => {
+  const purchaseCurrencyId =
+    Number(variant.purchaseCurrencyId) || defaultCurrencyId;
+  const wholesaleCurrencyId =
+    Number(variant.wholesaleCurrencyId) || defaultCurrencyId;
+  const retailCurrencyId =
+    Number(variant.retailCurrencyId) || defaultCurrencyId;
   const wholesale = optionalPositive(variant.wholesalePrice);
   const wholesalePercent = optionalPositive(variant.wholesalePercent);
   const retailPercent = optionalPositive(variant.retailPercent);
-  const barcode = variant.barcode.trim();
+  const barcodes = [
+    ...new Set(variant.barcodes.map((code) => code.trim()).filter(Boolean)),
+  ];
   const article = variant.article.trim();
   const limit = optionalPositive(variant.limit);
-  const box = optionalPositive(variant.boxQuantity);
+  const box =
+    optionalPositive(variant.boxQuantity) ?? PRODUCT_DEFAULT_BOX_QUANTITY;
 
   return {
     name: variant.name.trim() || fallbackName,
     ...(article ? { artikul: article } : {}),
     ...(limit !== undefined ? { alert_quantity: limit } : {}),
-    ...(box !== undefined ? { box_quantity: box } : {}),
+    box_quantity: box,
     allow_below_cost_sale: variant.allowBelowCost,
     purchase_price: toTwoDecimals(parseNumber(variant.purchasePrice)),
-    purchase_price_currency_id: currencyId,
+    purchase_price_currency_id: purchaseCurrencyId,
     retail_price: toTwoDecimals(parseNumber(variant.retailPrice)),
-    retail_price_currency_id: currencyId,
+    retail_price_currency_id: retailCurrencyId,
     ...(retailPercent !== undefined
       ? { retail_price_percentage: retailPercent }
       : {}),
     ...(wholesale !== undefined
       ? {
           wholesale_price: wholesale,
-          wholesale_price_currency_id: currencyId,
+          wholesale_price_currency_id: wholesaleCurrencyId,
         }
       : {}),
     ...(wholesalePercent !== undefined
       ? { wholesale_price_percentage: wholesalePercent }
       : {}),
     ...(variant.fileId !== null ? { file_id: variant.fileId } : {}),
-    ...(barcode ? { barcodes: [barcode] } : {}),
+    ...(barcodes.length > 0 ? { barcodes } : {}),
   };
 };
 
 export const buildCreatePayload = (
   values: ProductCreateFormValues,
-  currencyId: number,
+  defaultCurrencyId: number,
 ): CreateProductsPayload => ({
   products: values.rows.map<CreateProductPayload>((row) => ({
     name: row.name.trim(),
     unit_id: Number(row.unitId),
     variants: row.variants.map((variant) =>
-      toVariantPayload(variant, row.name.trim(), currencyId),
+      toVariantPayload(variant, row.name.trim(), defaultCurrencyId),
     ),
   })),
 });

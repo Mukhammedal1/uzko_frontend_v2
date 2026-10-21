@@ -1,5 +1,7 @@
 import { http } from "@/api/intercept";
 import type {
+  BulkDeletePayload,
+  BulkUpdateProductsPayload,
   CreateProductsPayload,
   ProductsQueryParams,
 } from "@/types/product.types";
@@ -7,9 +9,11 @@ import type {
 export const productService = {
   list: (params: ProductsQueryParams) =>
     http.get<unknown>("/products", { params }),
+  detail: (id: number) => http.get<unknown>(`/products/${id}`),
   create: (payload: CreateProductsPayload) =>
     http.post<unknown>("/products", payload),
-  remove: (id: number) => http.delete<unknown>(`/products/${id}`),
-  removeVariant: (id: number) =>
-    http.delete<unknown>(`/products/variants/${id}`),
+  update: (payload: BulkUpdateProductsPayload) =>
+    http.patch<unknown>("/products", payload),
+  remove: (payload: BulkDeletePayload) =>
+    http.delete<unknown>("/products", { body: payload }),
 };

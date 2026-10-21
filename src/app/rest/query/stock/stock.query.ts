@@ -1,12 +1,12 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 import { useAppLocale } from "@/composable/useAppLocale";
 import { useAuthReady } from "@/composable/useAuthReady";
 import { stockService } from "@/rest/service/stock/stock.service";
-import { normalizeOptions } from "@/utils/lookup";
+import { normalizeNamedItems, normalizeOptions } from "@/utils/lookup";
 
 export const stockKeys = {
   all: ["stock"] as const,
@@ -28,5 +28,41 @@ export function useStocksQuery(enabled = true) {
     [query.data, locale],
   );
 
-  return { options, isPending: query.isPending };
+  const items = useMemo(
+    () => normalizeNamedItems(query.data, locale),
+    [query.data, locale],
+  );
+
+  return { options, items, isPending: query.isPending };
+}
+
+export function useCreateStockMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    meta: { toast: "created" },
+    mutationFn: (name: string) => stockService.create(name),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: stockKeys.all }),
+  });
+}
+
+export function useUpdateStockMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    meta: { toast: "updated" },
+    mutationFn: ({ id, name }: { id: number; name: string }) =>
+      stockService.update(id, name),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: stockKeys.all }),
+  });
+}
+
+export function useDeleteStockMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    meta: { toast: "deleted" },
+    mutationFn: (id: number) => stockService.remove(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: stockKeys.all }),
+  });
 }

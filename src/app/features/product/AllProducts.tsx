@@ -10,7 +10,9 @@ import { Button } from "@/component/ui/button";
 import { useDebouncedValue } from "@/composable/useDebouncedValue";
 import { useProductColumns } from "@/composable/useProductColumns";
 import {
+  PRODUCT_BULK_EDIT_QUERY,
   PRODUCT_CREATE_PATH,
+  PRODUCT_EDIT_PATH,
   PRODUCTS_COLLAPSE_DURATION_MS,
   PRODUCTS_DEFAULT_FILTERS,
   PRODUCTS_DEFAULT_LIMIT,
@@ -25,18 +27,20 @@ import { ProductDeleteDialog } from "@/features/product/ProductDeleteDialog";
 import { ProductsTable } from "@/features/product/ProductsTable";
 import { ProductsToolbar } from "@/features/product/ProductsToolbar";
 import {
-  useDeleteProductMutation,
-  useDeleteVariantMutation,
+  useDeleteProductsMutation,
   useProductsQuery,
 } from "@/rest/query/product/product.query";
 import type {
+  BulkDeletePayload,
   ProductBoolFilterValue,
   ProductDeleteTarget,
   ProductFilterKey,
   ProductFilters,
+  ProductRow,
   ProductsQueryParams,
 } from "@/types/product.types";
 import {
+  buildBulkEditQuery,
   getProductSelectionKey,
   getVariantSelectionKey,
   pickSelectedProducts,
@@ -105,8 +109,7 @@ export function AllProducts() {
   );
 
   const products = useProductsQuery(params);
-  const deleteProduct = useDeleteProductMutation();
-  const deleteVariant = useDeleteVariantMutation();
+  const deleteProducts = useDeleteProductsMutation();
 
   const items = useMemo(() => products.data?.items ?? [], [products.data]);
 
@@ -161,17 +164,51 @@ export function AllProducts() {
     resetPage();
   };
 
-  const handleToggleSelect = (key: string) =>
-    setSelected((current) =>
-      current.has(key) ? withoutKey(current, key) : withKey(current, key),
-    );
+  const getProductKeys = (product: ProductRow) => [
+    getProductSelectionKey(product.id),
+    ...product.variants.map((variant) => getVariantSelectionKey(variant.id)),
+  ];
+
+  const handleToggleProduct = (product: ProductRow) =>
+    setSelected((current) => {
+      const next = new Set(current);
+      const select = !current.has(getProductSelectionKey(product.id));
+      getProductKeys(product).forEach((key) =>
+        select ? next.add(key) : next.delete(key),
+      );
+      return next;
+    });
+
+  const handleToggleVariant = (product: ProductRow, variantId: number) =>
+    setSelected((current) => {
+      const next = new Set(current);
+      const key = getVariantSelectionKey(variantId);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+
+      const productKey = getProductSelectionKey(product.id);
+      const every = product.variants.every((variant) =>
+        next.has(getVariantSelectionKey(variant.id)),
+      );
+      if (every) next.add(productKey);
+      else next.delete(productKey);
+      return next;
+    });
 
   const handleToggleAll = (checked: boolean) =>
     setSelected(
-      checked
-        ? new Set(items.map((product) => getProductSelectionKey(product.id)))
-        : new Set(),
+      checked ? new Set(items.flatMap(getProductKeys)) : new Set(),
     );
+
+  const handleBulkEdit = () => {
+    const targets = pickSelectedProducts(items, selected);
+    if (targets.length === 0) return;
+
+    router.push({
+      pathname: PRODUCT_EDIT_PATH,
+      query: { [PRODUCT_BULK_EDIT_QUERY]: buildBulkEditQuery(targets) },
+    });
+  };
 
   const handleToggleExpand = useCallback(
     (id: number) => {
@@ -212,28 +249,64 @@ export function AllProducts() {
     );
   };
 
-  const mutation =
-    deleteTarget?.kind === "variant" ? deleteVariant : deleteProduct;
+  const selectedVariantCount =
+    selected.size > 0
+      ? exportItems.reduce((sum, product) => sum + product.variants.length, 0)
+      : 0;
+
+  const handleBulkDelete = () => {
+    const productIds: number[] = [];
+    const variantIds: number[] = [];
+
+    items.forEach((product) => {
+      if (selected.has(getProductSelectionKey(product.id))) {
+        productIds.push(product.id);
+        return;
+      }
+      product.variants.forEach((variant) => {
+        if (selected.has(getVariantSelectionKey(variant.id))) {
+          variantIds.push(variant.id);
+        }
+      });
+    });
+
+    if (productIds.length === 0 && variantIds.length === 0) return;
+
+    setDeleteTarget({
+      kind: "bulk",
+      productIds,
+      variantIds,
+      count: selectedVariantCount,
+    });
+  };
 
   const handleConfirmDelete = () => {
     if (!deleteTarget) return;
 
-    const key =
-      deleteTarget.kind === "variant"
-        ? getVariantSelectionKey(deleteTarget.id)
-        : getProductSelectionKey(deleteTarget.id);
+    const payload: BulkDeletePayload =
+      deleteTarget.kind === "bulk"
+        ? {
+            ...(deleteTarget.productIds.length > 0
+              ? { product_ids: deleteTarget.productIds }
+              : {}),
+            ...(deleteTarget.variantIds.length > 0
+              ? { variant_ids: deleteTarget.variantIds }
+              : {}),
+          }
+        : deleteTarget.kind === "variant"
+          ? { variant_ids: [deleteTarget.id] }
+          : { product_ids: [deleteTarget.id] };
 
-    mutation.mutate(deleteTarget.id, {
+    deleteProducts.mutate(payload, {
       onSuccess: () => {
-        setSelected((current) => withoutKey(current, key));
+        setSelected(new Set());
         setDeleteTarget(null);
       },
     });
   };
 
   const handleCloseDelete = () => {
-    deleteProduct.reset();
-    deleteVariant.reset();
+    deleteProducts.reset();
     setDeleteTarget(null);
   };
 
@@ -248,6 +321,12 @@ export function AllProducts() {
           total={products.data?.total ?? 0}
           costTotals={costTotals}
           exportCount={exportItems.length}
+          selectedCount={selectedVariantCount}
+          onBulkEdit={handleBulkEdit}
+          onBulkMerge={handleComingSoon}
+          onBulkDiscount={handleComingSoon}
+          onBulkWriteOff={handleComingSoon}
+          onBulkDelete={handleBulkDelete}
           onSearchChange={handleSearch}
           onFilterChange={handleFilter}
           onFiltersReset={handleFiltersReset}
@@ -293,9 +372,17 @@ export function AllProducts() {
               closing={closing}
               columns={columns}
               onColumnChange={setColumn}
-              onToggleSelect={handleToggleSelect}
+              onToggleProduct={handleToggleProduct}
+              onToggleVariant={handleToggleVariant}
               onToggleAll={handleToggleAll}
               onToggleExpand={handleToggleExpand}
+              onEdit={(productId, variantId) =>
+                router.push(
+                  variantId === undefined
+                    ? `${PRODUCT_EDIT_PATH}/${productId}`
+                    : `${PRODUCT_EDIT_PATH}/${productId}?variant=${variantId}`,
+                )
+              }
               onDelete={setDeleteTarget}
             />
           )}
@@ -325,8 +412,8 @@ export function AllProducts() {
 
       <ProductDeleteDialog
         target={deleteTarget}
-        pending={mutation.isPending}
-        failed={mutation.isError}
+        pending={deleteProducts.isPending}
+        failed={deleteProducts.isError}
         onConfirm={handleConfirmDelete}
         onClose={handleCloseDelete}
       />

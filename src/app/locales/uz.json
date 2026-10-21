@@ -48,7 +48,7 @@
       "fullscreen": "To'liq ekran",
       "calendar": "Kalendar",
       "calculator": "Kalkulyator",
-      "addTab": "Yangi savatcha qo'shish"
+      "backspace": "O'chirish"
     },
     "loadingMenu": "Menyu yuklanmoqda",
     "user": {
@@ -96,6 +96,14 @@
       "template": "Excel shablonini yuklab olish"
     },
     "export": "Yuklab olish (CSV)",
+    "bulk": {
+      "trigger": "Tanlangan: {count}",
+      "edit": "Mahsulotlarni tahrirlash",
+      "merge": "Tovarni agentga birlashtirish",
+      "discount": "Chegirma",
+      "writeOff": "Hisobdan chiqarish",
+      "delete": "Bazadan o'chirish"
+    },
     "totalCount": "Jami soni",
     "totalCost": "Tan narx jami",
     "columns": {
@@ -125,6 +133,8 @@
     "deleteTitle": "Tovarni o'chirish",
     "deleteVariantTitle": "Variantni o'chirish",
     "deleteDescription": "\"{name}\" o'chiriladi. Bu amalni qaytarib bo'lmaydi.",
+    "deleteBulkTitle": "Tanlanganlarni o'chirish",
+    "deleteBulkDescription": "Tanlangan {count} ta tovar o'chiriladi. Bu amalni qaytarib bo'lmaydi.",
     "deleteError": "O'chirib bo'lmadi. Qayta urinib ko'ring.",
     "empty": "Tovar topilmadi",
     "loading": "Tovarlar yuklanmoqda",
@@ -154,6 +164,9 @@
     "costPlus": "Tan narx + %",
     "barcode": "Shtrix kod",
     "barcodePlaceholder": "Shtrix kod",
+    "barcodesCount": "{count} ta kod",
+    "barcodeScanMore": "Yana skanerlang...",
+    "removeBarcode": "Kodni o'chirish",
     "article": "Artikul",
     "articlePlaceholder": "Artikul",
     "image": "Rasm",
@@ -178,5 +191,57 @@
     "generate": "Avtomatik yaratish",
     "noCurrency": "Valyuta topilmadi",
     "removeImage": "Rasmni olib tashlash"
+  },
+  "settingsGeneral": {
+    "tabs": {
+      "stocks": "Omborlar",
+      "expenseTypes": "Xarajatlar kategoriyasi",
+      "shelfNumbers": "Polka raqamlari",
+      "currency": "Kursni yangilash"
+    },
+    "stocks": {
+      "description": "Tovar saqlash uchun ombor qo'shish",
+      "placeholder": "Ombor nomi...",
+      "deleteTitle": "Omborni o'chirish"
+    },
+    "expenseTypes": {
+      "description": "Kassadan pul chiqarish uchun xarajatlar kategoriyasi qo'shish",
+      "placeholder": "Xarajat kategoriyasi nomi...",
+      "deleteTitle": "Kategoriyani o'chirish"
+    },
+    "shelfNumbers": {
+      "description": "Tovarlar qayerda turishini belgilash uchun polka raqam qo'shish",
+      "placeholder": "Polka raqami...",
+      "deleteTitle": "Polka raqamini o'chirish"
+    },
+    "currency": {
+      "description": "Valyutalar kursini yangilash"
+    },
+    "columns": {
+      "id": "ID",
+      "name": "Nomi",
+      "symbol": "Belgi",
+      "rate": "Kurs",
+      "main": "Asosiy",
+      "actions": "Amallar"
+    },
+    "add": "Qo'shish",
+    "empty": "Ma'lumot topilmadi",
+    "deleteDescription": "\"{name}\" o'chirilsinmi? Bu amalni qaytarib bo'lmaydi."
+  },
+  "toast": {
+    "created": "Muvaffaqiyatli qo'shildi",
+    "updated": "Muvaffaqiyatli yangilandi",
+    "deleted": "Muvaffaqiyatli o'chirildi"
+  },
+  "productEdit": {
+    "title": "Mahsulotni tahrirlash",
+    "description": "Mahsulot va uning variantlarini o'zgartiring",
+    "bulkTitle": "Tanlangan mahsulotlarni tahrirlash",
+    "bulkDescription": "Tanlangan mahsulotlar va ularning variantlarini o'zgartiring",
+    "stock": "Ombor",
+    "shelf": "Polka raqami",
+    "notFound": "Mahsulot topilmadi",
+    "loading": "Yuklanmoqda..."
   }
 }

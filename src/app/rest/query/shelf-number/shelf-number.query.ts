@@ -1,12 +1,12 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 import { useAppLocale } from "@/composable/useAppLocale";
 import { useAuthReady } from "@/composable/useAuthReady";
 import { shelfNumberService } from "@/rest/service/shelf-number/shelf-number.service";
-import { normalizeOptions } from "@/utils/lookup";
+import { normalizeNamedItems, normalizeOptions } from "@/utils/lookup";
 
 export const shelfNumberKeys = {
   all: ["shelf-number"] as const,
@@ -28,5 +28,41 @@ export function useShelfNumbersQuery(enabled = true) {
     [query.data, locale],
   );
 
-  return { options, isPending: query.isPending };
+  const items = useMemo(
+    () => normalizeNamedItems(query.data, locale),
+    [query.data, locale],
+  );
+
+  return { options, items, isPending: query.isPending };
+}
+
+export function useCreateShelfNumberMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    meta: { toast: "created" },
+    mutationFn: (name: string) => shelfNumberService.create(name),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: shelfNumberKeys.all }),
+  });
+}
+
+export function useUpdateShelfNumberMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    meta: { toast: "updated" },
+    mutationFn: ({ id, name }: { id: number; name: string }) =>
+      shelfNumberService.update(id, name),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: shelfNumberKeys.all }),
+  });
+}
+
+export function useDeleteShelfNumberMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    meta: { toast: "deleted" },
+    mutationFn: (id: number) => shelfNumberService.remove(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: shelfNumberKeys.all }),
+  });
 }

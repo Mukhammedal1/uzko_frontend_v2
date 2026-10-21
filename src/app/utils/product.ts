@@ -1,5 +1,6 @@
 import type {
   CurrencyMap,
+  ProductBulkTarget,
   ProductRow,
   ProductsPage,
   ProductVariantRow,
@@ -187,3 +188,28 @@ export const pickSelectedProducts = (
     );
     return variants.length > 0 ? [{ ...product, variants }] : [];
   });
+
+export const buildBulkEditQuery = (products: ProductRow[]) =>
+  products
+    .map(
+      (product) =>
+        `${product.id}:${product.variants.map((variant) => variant.id).join(".")}`,
+    )
+    .join(",");
+
+export const parseBulkEditQuery = (value: unknown): ProductBulkTarget[] => {
+  if (typeof value !== "string") return [];
+
+  return value.split(",").flatMap((part) => {
+    const [idText = "", variantsText = ""] = part.split(":");
+    const productId = Number(idText);
+    if (!Number.isInteger(productId) || productId <= 0) return [];
+
+    const variantIds = variantsText
+      .split(".")
+      .map(Number)
+      .filter((id) => Number.isInteger(id) && id > 0);
+
+    return [{ productId, variantIds }];
+  });
+};

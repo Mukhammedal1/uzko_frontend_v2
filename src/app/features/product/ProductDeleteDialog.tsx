@@ -44,10 +44,14 @@ export function ProductDeleteDialog({
           <AlertDialogTitle>
             {target?.kind === "variant"
               ? t("deleteVariantTitle")
-              : t("deleteTitle")}
+              : target?.kind === "bulk"
+                ? t("deleteBulkTitle")
+                : t("deleteTitle")}
           </AlertDialogTitle>
           <AlertDialogDescription>
-            {t("deleteDescription", { name: target?.name ?? "" })}
+            {target?.kind === "bulk"
+              ? t("deleteBulkDescription", { count: target.count })
+              : t("deleteDescription", { name: target?.name ?? "" })}
           </AlertDialogDescription>
           {failed ? (
             <p role="alert" className="text-sm text-destructive">

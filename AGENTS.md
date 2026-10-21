@@ -56,6 +56,21 @@ Never create files in the project root folders other than `src/` and `public/`, 
 - Base components work only through props and emits. Data and configuration come in via props; every outgoing event is an emit, which in React is a callback prop named `on<Event>` (for example `onChange`, `onSelect`, `onClear`).
 - Base components stay presentational and controlled: they do not fetch data, read the store, or navigate on their own. The parent passes the value in and handles the emitted events.
 
+## Select options
+
+- Every select in the project (`BaseSelect`, pagination limit, currency select inside `BaseInputAddon`, any new one) shows its dropdown options the same way. The look lives in `SelectItem` of `src/app/component/ui/select.tsx`, so never restyle options per select.
+- The dropdown as a whole has one visible border (`border-border`). Individual options have no visible border, only the surrounding dropdown does.
+- The selected option is highlighted with `border-primary`, `bg-primary/10` and `text-primary`, the same look as an active filter select. There is no check icon.
+- A select with no selected value (for example an empty warehouse or shelf) still shows the dropdown with its border and plain options.
+
+## Tables
+
+- Every table in the project is built from the base table components in `src/app/component/base/table/`. Never write raw `<table>`, `<thead>`, `<tbody>`, `<tr>`, `<th>`, `<td>`, `<colgroup>` or `<col>` in pages or features.
+- For a normal list (header row plus one row per item) use `BaseTable`. It gets `columns` (`key`, `header`, `cell(row)`, optional `headerClassName` and `cellClassName`), `rows`, `getRowKey`, and optional `emptyLabel`, `loading` and `minWidthClassName`. It already provides the scroll container, sticky header, borders and the empty state. Column and table prop types are `BaseTableColumn` and `BaseTableProps` in `src/app/types/common.types.ts`.
+- For a table that needs custom structure (expandable sub-rows, a `colgroup` with set widths, row animations) use the unstyled parts from `BaseTableParts.tsx`: `BaseTableRoot`, `BaseTableColGroup`, `BaseTableCol`, `BaseTableHead`, `BaseTableBody`, `BaseTableRow`, `BaseTableHeadCell`, `BaseTableCell`. They render the same HTML element and pass every prop through, so all styling stays in the caller's `className`.
+- Cell content that is interactive (inline edit, radio, buttons) is returned from the column's `cell` function; the table itself stays presentational and does not fetch data.
+- Moving an existing table to the base components must not change how it looks or works.
+
 ## Rest and plugins
 
 - Server state is managed with TanStack Query (`@tanstack/react-query`). The query client and provider are configured in `src/app/plugins/tanstack-query.tsx` and mounted once in `src/app/pages/_app.tsx`.

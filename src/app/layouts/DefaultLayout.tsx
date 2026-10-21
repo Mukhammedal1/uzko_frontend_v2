@@ -10,7 +10,7 @@ export function DefaultLayout({ children }: { children?: ReactNode }) {
     <div className="flex h-dvh w-full flex-col overflow-hidden">
       <DefaultHeader />
       <DefaultSubNav />
-      <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+      <main className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
         <DefaultRouteGuard>{children}</DefaultRouteGuard>
       </main>
       <DefaultFooter />

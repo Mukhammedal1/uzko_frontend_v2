@@ -11,3 +11,12 @@ export type LayoutCurrencyRate = {
   code: string;
   rate: string;
 };
+
+export type CalculatorOperator = "+" | "-" | "*" | "/";
+
+export type CalculatorState = {
+  display: string;
+  accumulator: number | null;
+  operator: CalculatorOperator | null;
+  fresh: boolean;
+};
