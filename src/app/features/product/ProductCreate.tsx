@@ -3,11 +3,12 @@
 import { ArrowLeft, Check, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo } from "react";
 import { useFieldArray, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 
 import { Button } from "@/component/ui/button";
+import { useRoundPrices } from "@/composable/useRoundPrices";
 import { Label } from "@/component/ui/label";
 import { Switch } from "@/component/ui/switch";
 import {
@@ -24,9 +25,6 @@ import type { ProductCreateFormValues } from "@/types/product.types";
 import {
   buildCreatePayload,
   createEmptyRow,
-  parseNumber,
-  percentFromPrice,
-  roundPrice,
 } from "@/utils/product-create";
 import { productCreateSchema } from "@/validate/product/create.zod";
 
@@ -48,9 +46,11 @@ export function ProductCreate() {
     name: "rows",
   });
 
-  const unroundedRef = useRef(
-    new Map<string, { price: string; percent: string; rounded: string }>(),
-  );
+  const { handleRoundChange } = useRoundPrices({
+    form,
+    defaultCurrencyId: mainCurrency ? String(mainCurrency.id) : "",
+    currencyRates,
+  });
 
   const roundPrices = useWatch({ control: form.control, name: "roundPrices" });
   const rows = useWatch({ control: form.control, name: "rows" });
@@ -82,66 +82,6 @@ export function ProductCreate() {
     append(createEmptyRow(defaultUnitId, first));
   };
 
-  const handleRoundChange = (checked: boolean) => {
-    form.setValue("roundPrices", checked, { shouldDirty: true });
-
-    const rateOf = (id: string) =>
-      currencyRates[id || String(mainCurrency?.id ?? "")] ?? 1;
-
-    form.getValues("rows").forEach((row, rowIndex) => {
-      row.variants.forEach((variant, variantIndex) => {
-        const path = `rows.${rowIndex}.variants.${variantIndex}` as const;
-        const costRate = rateOf(variant.purchaseCurrencyId);
-        const prices = [
-          {
-            price: "wholesalePrice",
-            percent: "wholesalePercent",
-            rate: rateOf(variant.wholesaleCurrencyId),
-          },
-          {
-            price: "retailPrice",
-            percent: "retailPercent",
-            rate: rateOf(variant.retailCurrencyId),
-          },
-        ] as const;
-
-        prices.forEach(({ price, percent, rate }) => {
-          const key = `${path}.${price}`;
-          const current = variant[price];
-
-          if (!checked) {
-            const saved = unroundedRef.current.get(key);
-            if (saved && saved.rounded === current) {
-              form.setValue(`${path}.${price}`, saved.price, {
-                shouldDirty: true,
-              });
-              form.setValue(`${path}.${percent}`, saved.percent, {
-                shouldDirty: true,
-              });
-            }
-            unroundedRef.current.delete(key);
-            return;
-          }
-
-          if (current.trim() === "") return;
-
-          const rounded = String(roundPrice(parseNumber(current), rate));
-          unroundedRef.current.set(key, {
-            price: current,
-            percent: variant[percent],
-            rounded,
-          });
-          form.setValue(`${path}.${price}`, rounded, { shouldDirty: true });
-          form.setValue(
-            `${path}.${percent}`,
-            percentFromPrice(variant.purchasePrice, rounded, costRate, rate),
-            { shouldDirty: true },
-          );
-        });
-      });
-    });
-  };
-
   const handleSubmit = form.handleSubmit((values: ProductCreateFormValues) => {
     if (values.rows.some((row) => row.mode === "variants")) {
       toast.error(t("finishHint"), { toastId: "product-create-variants" });
@@ -162,7 +102,7 @@ export function ProductCreate() {
   return (
     <form
       noValidate
-      className="flex min-h-0 flex-1 flex-col p-3 sm:px-5"
+      className="flex min-h-0 flex-1 flex-col"
       onSubmit={handleSubmit}
     >
       <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border bg-card">

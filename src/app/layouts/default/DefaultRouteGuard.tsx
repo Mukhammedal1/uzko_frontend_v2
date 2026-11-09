@@ -5,11 +5,13 @@ import { useEffect, type ReactNode } from "react";
 
 import { LAYOUT_LOGIN_PATH } from "@/constants/layout/layout.constants";
 import { useAuthStatus } from "@/composable/useAuthReady";
+import { useCurrentPath } from "@/composable/useCurrentPath";
 import { useMenu } from "@/composable/useMenu";
+import { isMenuPageActive } from "@/utils/menu";
 
 export function DefaultRouteGuard({ children }: { children?: ReactNode }) {
   const router = useRouter();
-  const { pathname } = router;
+  const pathname = useCurrentPath();
   const authStatus = useAuthStatus();
   const { modules, isPending } = useMenu();
 
@@ -20,9 +22,7 @@ export function DefaultRouteGuard({ children }: { children?: ReactNode }) {
   const allowed =
     isHome ||
     modules.some((module) =>
-      module.pages.some(
-        (page) => pathname === page.href || pathname.startsWith(`${page.href}/`),
-      ),
+      module.pages.some((page) => isMenuPageActive(page, pathname)),
     );
 
   const redirectTo = moduleRoot?.href ?? modules[0]?.href;

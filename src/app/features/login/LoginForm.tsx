@@ -53,6 +53,7 @@ export function LoginForm() {
         render={({ field, fieldState }) => (
           <BaseInputText
             id="login-email"
+            required
             type="email"
             label={t("login.email")}
             placeholder={t("login.emailPlaceholder")}
@@ -72,6 +73,7 @@ export function LoginForm() {
         render={({ field, fieldState }) => (
           <BaseInputPassword
             id="login-password"
+            required
             label={t("login.password")}
             placeholder={t("login.passwordPlaceholder")}
             showLabel={t("login.showPassword")}

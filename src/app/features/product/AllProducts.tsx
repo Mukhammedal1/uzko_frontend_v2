@@ -10,6 +10,7 @@ import { Button } from "@/component/ui/button";
 import { useDebouncedValue } from "@/composable/useDebouncedValue";
 import { useProductColumns } from "@/composable/useProductColumns";
 import {
+  PRODUCT_ASSIGN_FIELDS,
   PRODUCT_BULK_EDIT_QUERY,
   PRODUCT_CREATE_PATH,
   PRODUCT_EDIT_PATH,
@@ -23,15 +24,18 @@ import {
   PRODUCTS_SEARCH_DEBOUNCE_MS,
   PRODUCTS_SKELETON_ROWS,
 } from "@/constants/product/product.constants";
+import { ProductAssignDialog } from "@/features/product/ProductAssignDialog";
 import { ProductDeleteDialog } from "@/features/product/ProductDeleteDialog";
 import { ProductsTable } from "@/features/product/ProductsTable";
 import { ProductsToolbar } from "@/features/product/ProductsToolbar";
 import {
+  useAssignVariantsMutation,
   useDeleteProductsMutation,
   useProductsQuery,
 } from "@/rest/query/product/product.query";
 import type {
   BulkDeletePayload,
+  ProductAssignKind,
   ProductBoolFilterValue,
   ProductDeleteTarget,
   ProductFilterKey,
@@ -79,6 +83,7 @@ export function AllProducts() {
   const [deleteTarget, setDeleteTarget] = useState<ProductDeleteTarget | null>(
     null,
   );
+  const [assignKind, setAssignKind] = useState<ProductAssignKind | null>(null);
   const timers = useRef<number[]>([]);
 
   useEffect(() => {
@@ -110,6 +115,7 @@ export function AllProducts() {
 
   const products = useProductsQuery(params);
   const deleteProducts = useDeleteProductsMutation();
+  const assignVariants = useAssignVariantsMutation();
 
   const items = useMemo(() => products.data?.items ?? [], [products.data]);
 
@@ -305,6 +311,30 @@ export function AllProducts() {
     });
   };
 
+  const handleConfirmAssign = (id: number) => {
+    if (!assignKind) return;
+
+    const variantIds = pickSelectedProducts(items, selected).flatMap(
+      (product) => product.variants.map((variant) => variant.id),
+    );
+    if (variantIds.length === 0) return;
+
+    assignVariants.mutate(
+      { variant_ids: variantIds, [PRODUCT_ASSIGN_FIELDS[assignKind]]: id },
+      {
+        onSuccess: () => {
+          setSelected(new Set());
+          setAssignKind(null);
+        },
+      },
+    );
+  };
+
+  const handleCloseAssign = () => {
+    assignVariants.reset();
+    setAssignKind(null);
+  };
+
   const handleCloseDelete = () => {
     deleteProducts.reset();
     setDeleteTarget(null);
@@ -313,7 +343,7 @@ export function AllProducts() {
   const isInitialLoading = products.isPending && !products.data;
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col p-3 sm:px-5">
+    <div className="flex min-h-0 flex-1 flex-col">
       <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border bg-card">
         <ProductsToolbar
           search={search}
@@ -323,7 +353,7 @@ export function AllProducts() {
           exportCount={exportItems.length}
           selectedCount={selectedVariantCount}
           onBulkEdit={handleBulkEdit}
-          onBulkMerge={handleComingSoon}
+          onBulkAssign={setAssignKind}
           onBulkDiscount={handleComingSoon}
           onBulkWriteOff={handleComingSoon}
           onBulkDelete={handleBulkDelete}
@@ -377,18 +407,19 @@ export function AllProducts() {
               onToggleAll={handleToggleAll}
               onToggleExpand={handleToggleExpand}
               onEdit={(productId, variantId) =>
-                router.push(
-                  variantId === undefined
-                    ? `${PRODUCT_EDIT_PATH}/${productId}`
-                    : `${PRODUCT_EDIT_PATH}/${productId}?variant=${variantId}`,
-                )
+                router.push({
+                  pathname: PRODUCT_EDIT_PATH,
+                  query: {
+                    [PRODUCT_BULK_EDIT_QUERY]: `${productId}:${variantId ?? ""}`,
+                  },
+                })
               }
               onDelete={setDeleteTarget}
             />
           )}
         </div>
 
-        <div className="shrink-0 border-t p-2">
+        <div className="shrink-0 border-t px-2 py-1">
           <BasePagination
             page={products.data?.page ?? page}
             totalPages={products.data?.totalPages ?? 1}
@@ -409,6 +440,15 @@ export function AllProducts() {
           />
         </div>
       </section>
+
+      <ProductAssignDialog
+        kind={assignKind}
+        count={selectedVariantCount}
+        pending={assignVariants.isPending}
+        failed={assignVariants.isError}
+        onConfirm={handleConfirmAssign}
+        onClose={handleCloseAssign}
+      />
 
       <ProductDeleteDialog
         target={deleteTarget}

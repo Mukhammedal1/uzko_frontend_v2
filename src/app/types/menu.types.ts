@@ -8,6 +8,7 @@ export type MenuPage = {
   order: number;
   name: LocalizedName;
   href: string;
+  children: MenuPage[];
 };
 
 export type MenuModule = {

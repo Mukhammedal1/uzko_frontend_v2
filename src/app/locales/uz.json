@@ -7,7 +7,8 @@
     "search": "Qidirish",
     "loading": "Yuklanmoqda...",
     "comingSoon": "Bu sahifa tez orada tayyor bo'ladi",
-    "clear": "Tozalash"
+    "clear": "Tozalash",
+    "noResults": "Hech narsa topilmadi"
   },
   "errors": {
     "network": "Serverga ulanib bo'lmadi. Internetni tekshiring.",
@@ -46,6 +47,7 @@
     },
     "footer": {
       "fullscreen": "To'liq ekran",
+      "exitFullscreen": "To'liq ekrandan chiqish",
       "calendar": "Kalendar",
       "calculator": "Kalkulyator",
       "backspace": "O'chirish"
@@ -99,10 +101,35 @@
     "bulk": {
       "trigger": "Tanlangan: {count}",
       "edit": "Mahsulotlarni tahrirlash",
-      "merge": "Tovarni agentga birlashtirish",
+      "mergeSupplier": "Ta'minotchiga birlashtirish",
+      "mergeStock": "Omborga birlashtirish",
+      "mergeShelf": "Polka raqamiga birlashtirish",
       "discount": "Chegirma",
       "writeOff": "Hisobdan chiqarish",
       "delete": "Bazadan o'chirish"
+    },
+    "assign": {
+      "selected": "{count} ta mahsulot tanlangan",
+      "confirm": "Birlashtirish",
+      "error": "Birlashtirib bo'lmadi. Qayta urinib ko'ring.",
+      "supplier": {
+        "title": "Tovarni ta'minotchiga birlashtirish",
+        "description": "Tovarlar shu ta'minotchidan kelgan deb belgilanadi. Keyingi safar shu tovarlar qabul qilinganda ta'minotchi avtomatik aniqlanadi.",
+        "label": "Ta'minotchi",
+        "placeholder": "Ta'minotchini tanlang"
+      },
+      "stock": {
+        "title": "Tovarni omborga birlashtirish",
+        "description": "Tanlangan tovarlar shu omborga biriktiriladi.",
+        "label": "Ombor",
+        "placeholder": "Omborni tanlang"
+      },
+      "shelf": {
+        "title": "Tovarni polka raqamiga birlashtirish",
+        "description": "Tanlangan tovarlar shu polkaga biriktiriladi.",
+        "label": "Polka raqami",
+        "placeholder": "Polka raqamini tanlang"
+      }
     },
     "totalCount": "Jami soni",
     "totalCost": "Tan narx jami",
@@ -243,5 +270,252 @@
     "shelf": "Polka raqami",
     "notFound": "Mahsulot topilmadi",
     "loading": "Yuklanmoqda..."
+  },
+  "supplier": {
+    "searchPlaceholder": "Ism, telefon, tashkilot yoki INN...",
+    "filter": "Filter",
+    "filtersReset": "Filterni tozalash",
+    "filters": {
+      "has_debt": "Qarz bo'yicha",
+      "has_payment": "To'lov bo'yicha",
+      "has_image": "Rasm bo'yicha"
+    },
+    "filterValues": {
+      "all": "Hammasi",
+      "yes": "Bor",
+      "no": "Yo'q"
+    },
+    "add": "Yangi ta'minotchi",
+    "edit": "Tahrirlash",
+    "delete": "O'chirish",
+    "currency": "so'm",
+    "stats": {
+      "count": "Yetkazib beruvchilar soni",
+      "countUnit": "ta",
+      "debt": "Joriy umumiy qarzimiz",
+      "paid": "Jami to'langan qarzimiz",
+      "turnover": "Jami qarz aylanmamiz"
+    },
+    "columns": {
+      "image": "Rasm",
+      "fullname": "Ta'minotchi",
+      "organization": "Tashkilot",
+      "inn": "INN",
+      "account": "Hisob raqami",
+      "address": "Manzil",
+      "note": "Izoh",
+      "debt": "Umumiy qarz",
+      "payment": "Umumiy to'lov",
+      "actions": "Amallar"
+    },
+    "selectAll": "Hammasini tanlash",
+    "selectRow": "Qatorni tanlash",
+    "empty": "Ta'minotchi topilmadi",
+    "loadError": "Ta'minotchilarni yuklab bo'lmadi.",
+    "retry": "Qayta urinish",
+    "loading": "Yuklanmoqda...",
+    "limit": "Limit",
+    "previous": "Oldingi sahifa",
+    "next": "Keyingi sahifa",
+    "page": "Sahifa raqami",
+    "deleteTitle": "Ta'minotchini o'chirish",
+    "deleteDescription": "“{name}” ta'minotchisi o'chiriladi. Davom etasizmi?",
+    "deleteBulkTitle": "Tanlangan ta'minotchilarni o'chirish",
+    "deleteBulkDescription": "Tanlangan {count} ta ta'minotchi o'chiriladi. Davom etasizmi?",
+    "deleteError": "O'chirib bo'lmadi. Qayta urinib ko'ring.",
+    "showAllDebts": "Barcha qarzlar",
+    "showAllPaid": "Barcha umumiy to'lovlar",
+    "export": {
+      "title": "Ta'minotchilarni yuklab olish",
+      "selected": "Tanlangan {count} ta ta'minotchi yuklab olinadi",
+      "format": "Format",
+      "columns": "Qaysi ustunlar chiqsin?",
+      "download": "Yuklab olish",
+      "formats": {
+        "xlsx": "Excel",
+        "pdf": "PDF"
+      }
+    },
+    "form": {
+      "createTitle": "Yangi ta'minotchi",
+      "editTitle": "Ta'minotchini tahrirlash",
+      "fullname": "To'liq ismi",
+      "phone_number": "Telefon raqami",
+      "organization_name": "Tashkilot nomi",
+      "organization_inn": "INN",
+      "bank_account_number": "Hisob raqami",
+      "total_debt_amount": "Umumiy qarz",
+      "address": "Manzil",
+      "note": "Izoh",
+      "image": "Rasm",
+      "imagePlaceholder": "Rasm tanlash",
+      "addDebt": "Qarz qo'shish",
+      "removeDebt": "Qarzni o'chirish"
+    },
+    "columnsSettings": "Ustunlarni sozlash"
+  },
+  "purchase": {
+    "searchPlaceholder": "Ta'minotchi yoki izoh bo'yicha qidirish",
+    "filter": "Filtr",
+    "filterAll": "Hammasi",
+    "filtersReset": "Filtrlarni tozalash",
+    "paymentMethod": "To'lov usuli",
+    "supplier": "Ta'minotchi",
+    "fromDate": "Sanadan",
+    "toDate": "Sanagacha",
+    "add": "Tovar prixod qilish",
+    "loadError": "Prixodlarni yuklab bo'lmadi.",
+    "retry": "Qayta urinish",
+    "loading": "Yuklanmoqda...",
+    "empty": "Prixodlar topilmadi",
+    "limit": "Limit",
+    "previous": "Oldingi sahifa",
+    "next": "Keyingi sahifa",
+    "edit": "Tahrirlash",
+    "editSoon": "Tahrirlash tez orada qo'shiladi",
+    "editSoldOut": "Bu prixoddagi tovarlar sotilib bo'lingan",
+    "delete": "O'chirish",
+    "deleteTitle": "Prixodni o'chirish",
+    "deleteDescription": "{number} raqamli prixod o'chiriladi. Bu amalni qaytarib bo'lmaydi.",
+    "deleteError": "O'chirib bo'lmadi. Qayta urinib ko'ring.",
+    "page": "Sahifa raqami",
+    "columns": {
+      "number": "Prixod №",
+      "date": "Sana",
+      "supplier": "Ta'minotchi",
+      "stock": "Ombor",
+      "total": "Jami summa",
+      "paid": "To'langan",
+      "method": "To'lov usuli",
+      "user": "Kim qo'shdi",
+      "note": "Izoh",
+      "actions": "Amallar"
+    },
+    "paymentMethods": {
+      "CASH": "Naqd",
+      "CARD": "Karta",
+      "BANK": "Bank",
+      "TRANSFER": "O'tkazma"
+    },
+    "paymentProviders": {
+      "HUMO": "Humo",
+      "UZCARD": "Uzcard",
+      "VISA": "Visa",
+      "MASTERCARD": "Mastercard",
+      "CLICK": "Click",
+      "PAYME": "Payme",
+      "PAYNET": "Paynet"
+    },
+    "create": {
+      "title": "Tovar prixod qilish",
+      "cancel": "Bekor qilish",
+      "save": "Saqlash",
+      "product": "Mahsulot nomi",
+      "productPlaceholder": "Mahsulot nomini yozing...",
+      "productLoading": "Qidirilmoqda...",
+      "productEmpty": "Mahsulot topilmadi",
+      "quantity": "Soni",
+      "cost": "Tan narx",
+      "wholesale": "Optom narx",
+      "retail": "Sotuv narxi",
+      "costPlus": "Tan narx + %",
+      "stock": "Ombor",
+      "shelf": "Polka raqami",
+      "selectPlaceholder": "Tanlanmagan",
+      "supplier": "Ta'minotchi",
+      "supplierPlaceholder": "Ta'minotchini tanlang",
+      "addRow": "Qator qo'shish",
+      "removeRow": "Qatorni o'chirish",
+      "maxRows": "Bitta prixodda {count} tagacha mahsulot bo'ladi",
+      "noCurrency": "Asosiy valyuta topilmadi",
+      "pickProduct": "Mahsulotni ro'yxatdan tanlang",
+      "editTitle": "Prixodni tahrirlash",
+      "loadError": "Prixodni yuklab bo'lmadi.",
+      "retry": "Qayta urinish"
+    },
+    "history": {
+      "title": "Prixod tarixi",
+      "date": "Sana",
+      "user": "Kim",
+      "note": "Izoh",
+      "debt": "Qarz o'zgarishi",
+      "paid": "To'lov o'zgarishi",
+      "empty": "Tarix yo'q",
+      "loadError": "Tarixni yuklab bo'lmadi.",
+      "purchase": "Prixod №",
+      "supplier": "Ta'minotchi",
+      "retry": "Qayta urinish",
+      "loading": "Yuklanmoqda..."
+    },
+    "finish": {
+      "title": "Prixodni yakunlash",
+      "adding": "Qo'shilayotgan tovar",
+      "itemsCount": "{count} ta tovar",
+      "total": "Tan narxda jami",
+      "supplier": "Ta'minotchi",
+      "supplierPlaceholder": "Ta'minotchini tanlang",
+      "paidAmount": "Berilgan summa",
+      "paymentMethod": "To'lov usuli",
+      "debtHint": "Qoldiq — qarz sifatida yoziladi",
+      "note": "Izoh — ixtiyoriy",
+      "notePlaceholder": "Masalan: naqd qo'lda berildi",
+      "editTitle": "Prixodni tahrirlash",
+      "editReason": "Tahrirlash sababi — ixtiyoriy",
+      "editReasonPlaceholder": "Masalan: narx xato kiritilgan",
+      "confirm": "Tasdiqlash va saqlash",
+      "saving": "Saqlanmoqda...",
+      "addPayment": "To'lov qo'shish",
+      "removePayment": "To'lovni o'chirish",
+      "supplierDebt": "Ta'minotchiga qarzimiz",
+      "noSupplierDebt": "Qarz yo'q",
+      "providerLabels": {
+        "CARD": "Karta turi",
+        "TRANSFER": "To'lov tizimi"
+      }
+    },
+    "columnsSettings": "Ustunlarni sozlash"
+  },
+  "sale": {
+    "cart": "Savatcha",
+    "positions": "{count} pozitsiya",
+    "posUi": "POS UI",
+    "currency": "Valyuta",
+    "priceMode": "Narx turi",
+    "modes": {
+      "retail": "Oddiy",
+      "wholesale": "Optom"
+    },
+    "actions": {
+      "offerCustomers": "Mijozlar taklif",
+      "repayDebt": "Qarz so'ndirish",
+      "online": "Online savdo",
+      "returnGoods": "Tovar qaytarish",
+      "oneTime": "Bir martalik"
+    },
+    "emptyTitle": "Mahsulot tanlanmagan",
+    "emptyHint": "Pastdagi qidiruv orqali mahsulot qo'shing",
+    "subtotal": "Oraliq summa",
+    "total": "Jami",
+    "discount": "Skidka",
+    "demo": "Demo",
+    "finish": "Yakun",
+    "scan": "Skaner",
+    "clear": "Tozalash",
+    "searchPlaceholder": "Mahsulotni nomi, shtrix kodi yoki maxsus kodi orqali toping...",
+    "columns": {
+      "name": "Nomi",
+      "cost": "Tan narx",
+      "retail": "Narxi",
+      "wholesale": "Optom narx",
+      "quantity": "Omborda",
+      "unit": "Birlik",
+      "margin": "Marja"
+    },
+    "columnsSettings": "Ustunlarni sozlash",
+    "variantsCount": "{count} ta variant",
+    "loadError": "Mahsulotlarni yuklab bo'lmadi.",
+    "retry": "Qayta urinish",
+    "loading": "Yuklanmoqda...",
+    "empty": "Mahsulot topilmadi"
   }
 }

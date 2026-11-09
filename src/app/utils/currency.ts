@@ -48,6 +48,7 @@ const toBusinessCurrency = (item: Record<string, unknown>): MainCurrency | null 
 
   return {
     id,
+    businessId: typeof item.id === "number" ? item.id : id,
     code: getCurrencyCode(item) || getCurrencyCode(nested),
     rate: Number.isFinite(rate) && rate > 0 ? rate : 1,
   };

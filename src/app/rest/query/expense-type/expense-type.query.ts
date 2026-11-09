@@ -42,7 +42,8 @@ export function useCreateExpenseTypeMutation() {
   return useMutation({
     meta: { toast: "created" },
     mutationFn: (name: string) => expenseTypeService.create(name),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: expenseTypeKeys.all }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: expenseTypeKeys.all }),
   });
 }
 
@@ -53,7 +54,8 @@ export function useUpdateExpenseTypeMutation() {
     meta: { toast: "updated" },
     mutationFn: ({ id, name }: { id: number; name: string }) =>
       expenseTypeService.update(id, name),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: expenseTypeKeys.all }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: expenseTypeKeys.all }),
   });
 }
 
@@ -63,6 +65,7 @@ export function useDeleteExpenseTypeMutation() {
   return useMutation({
     meta: { toast: "deleted" },
     mutationFn: (id: number) => expenseTypeService.remove(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: expenseTypeKeys.all }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: expenseTypeKeys.all }),
   });
 }

@@ -14,6 +14,7 @@ import { useAuthReady } from "@/composable/useAuthReady";
 import { useCurrenciesQuery } from "@/rest/query/currency/currency.query";
 import { productService } from "@/rest/service/product/product.service";
 import type {
+  AssignVariantsPayload,
   BulkDeletePayload,
   CreateProductsPayload,
   ProductEditSubmit,
@@ -24,8 +25,7 @@ import { normalizeProductsPage } from "@/utils/product";
 
 export const productKeys = {
   all: ["products"] as const,
-  list: (params: ProductsQueryParams) =>
-    ["products", "list", params] as const,
+  list: (params: ProductsQueryParams) => ["products", "list", params] as const,
   detail: (id: number) => ["products", "detail", id] as const,
 };
 
@@ -72,6 +72,18 @@ export function useDeleteProductsMutation() {
   });
 }
 
+export function useAssignVariantsMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    meta: { toast: "updated" },
+    mutationFn: (payload: AssignVariantsPayload) =>
+      productService.assign(payload),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: productKeys.all }),
+  });
+}
+
 export function useCreateProductsMutation() {
   const queryClient = useQueryClient();
 
@@ -82,23 +94,6 @@ export function useCreateProductsMutation() {
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: productKeys.all }),
   });
-}
-
-export function useProductDetailQuery(id: number) {
-  const authReady = useAuthReady();
-
-  const query = useQuery({
-    queryKey: productKeys.detail(id),
-    queryFn: () => productService.detail(id),
-    enabled: authReady && Number.isFinite(id) && id > 0,
-    staleTime: 0,
-  });
-
-  return {
-    data: query.data,
-    isPending: query.isPending,
-    isError: query.isError,
-  };
 }
 
 const combineDetails = (results: UseQueryResult<unknown>[]) => ({
@@ -142,17 +137,6 @@ const submitProductEdits = async (submits: ProductEditSubmit[]) => {
 
   if (products.length > 0) await productService.update({ products });
 };
-
-export function useUpdateProductMutation() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    meta: { toast: "updated" },
-    mutationFn: (submit: ProductEditSubmit) => submitProductEdits([submit]),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: productKeys.all }),
-  });
-}
 
 export function useUpdateProductsMutation() {
   const queryClient = useQueryClient();

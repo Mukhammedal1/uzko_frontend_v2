@@ -83,6 +83,15 @@ export type BulkDeletePayload = {
   variant_ids?: number[];
 };
 
+export type ProductAssignKind = "supplier" | "stock" | "shelf";
+
+export type AssignVariantsPayload = {
+  variant_ids: number[];
+  supplier_id?: number;
+  stock_id?: number;
+  shelf_number_id?: number;
+};
+
 export type ProductDeleteTarget =
   | { kind: "product" | "variant"; id: number; name: string }
   | { kind: "bulk"; productIds: number[]; variantIds: number[]; count: number };
@@ -191,6 +200,7 @@ export type UploadedFile = {
 
 export type MainCurrency = {
   id: number;
+  businessId: number;
   code: string;
   rate: number;
 };

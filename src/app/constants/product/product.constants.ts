@@ -16,6 +16,12 @@ export const PRODUCTS_LIMIT_OPTIONS = [10, 20, 50, 100];
 
 export const PRODUCTS_SEARCH_DEBOUNCE_MS = 400;
 
+export const PRODUCT_ASSIGN_FIELDS = {
+  supplier: "supplier_id",
+  stock: "stock_id",
+  shelf: "shelf_number_id",
+} as const;
+
 export const PRODUCTS_FILTER_ALL = "all";
 
 export const PRODUCTS_SELECT_FILTER_KEYS: ProductSelectFilterKey[] = [

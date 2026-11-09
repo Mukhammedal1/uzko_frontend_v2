@@ -133,10 +133,12 @@ export function ProductCreateVariant({
 
   const recalculate = (cost: string) => {
     (["wholesalePrice", "retailPrice"] as const).forEach((priceKey) => {
+      const hasPrice = getField(priceKey).trim() !== "";
       if (
         priceDriven.current.has(priceKey) ||
         getField(PRICE_PERCENT_KEYS[priceKey]).trim() === ""
       ) {
+        if (hasPrice) priceDriven.current.add(priceKey);
         recalculatePercent(priceKey, cost);
         return;
       }
@@ -267,6 +269,12 @@ export function ProductCreateVariant({
                   onChange={(value) => {
                     field.onChange(value);
                     priceDriven.current.delete(priceKey);
+                    if (value.trim() === "") {
+                      if (parseNumber(getField("purchasePrice")) > 0) {
+                        setField(priceKey, "0");
+                      }
+                      return;
+                    }
                     recalculatePrice(priceKey, value);
                   }}
                   onBlur={field.onBlur}

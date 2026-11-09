@@ -62,6 +62,7 @@ Never create files in the project root folders other than `src/` and `public/`, 
 - The dropdown as a whole has one visible border (`border-border`). Individual options have no visible border, only the surrounding dropdown does.
 - The selected option is highlighted with `border-primary`, `bg-primary/10` and `text-primary`, the same look as an active filter select. There is no check icon.
 - A select with no selected value (for example an empty warehouse or shelf) still shows the dropdown with its border and plain options.
+- Every `BaseSelect` has a search field at the top of its dropdown that filters the options by their label (case-insensitive), and Enter selects the first match. It is on by default for every select built with `BaseSelect`; pass `searchable={false}` only when a select can never have more than a couple of options. Never build a select from raw shadcn `Select` in pages or features: use `BaseSelect` so the search comes for free. The placeholder defaults to `common.search` and the empty state to `common.noResults`.
 
 ## Tables
 
@@ -70,6 +71,9 @@ Never create files in the project root folders other than `src/` and `public/`, 
 - For a table that needs custom structure (expandable sub-rows, a `colgroup` with set widths, row animations) use the unstyled parts from `BaseTableParts.tsx`: `BaseTableRoot`, `BaseTableColGroup`, `BaseTableCol`, `BaseTableHead`, `BaseTableBody`, `BaseTableRow`, `BaseTableHeadCell`, `BaseTableCell`. They render the same HTML element and pass every prop through, so all styling stays in the caller's `className`.
 - Cell content that is interactive (inline edit, radio, buttons) is returned from the column's `cell` function; the table itself stays presentational and does not fetch data.
 - Moving an existing table to the base components must not change how it looks or works.
+- Column visibility: in every table the user chooses which columns are shown. A column-settings button (the `Columns2` icon, `BaseTableColumnsMenu` in `src/app/component/base/table/`) sits in the header of the actions column (or in the last header cell when there is no actions column) and opens a popover with one checkbox per column, exactly like the products table. The key identity column (name, checkbox, row actions) is always visible and is not in the list.
+- Persist the choice with `useColumnVisibility(storageKey, defaults)` from `src/app/composable/useColumnVisibility.ts`, using the storage key `<page>.columns` (for example `suppliers.columns`) and a constant defaults object in the page's constants file (all columns visible by default). `BaseTable` supports this through `columnVisibility`, `onColumnVisibilityChange` and `columnsLabel` plus `toggleable: false` on columns that must stay; tables built from the unstyled parts must hide the header cell, the `col` width and the body cell of a hidden column themselves and recompute the remaining widths.
+- The column-settings label (`columnsSettings`) is a translation key in the page's topic in all 3 locale files.
 
 ## Rest and plugins
 
@@ -128,6 +132,33 @@ Never create files in the project root folders other than `src/` and `public/`, 
 - The chosen palette is "Monochrome": neutral zinc grays, a near-black primary in light mode and a near-white primary in dark mode, `0.5rem` base radius. To change the look, edit the variables in `src/app/globals.css`.
 - Read or change the mode with `useThemeMode()` from `src/app/composable/useThemeMode.ts`; the switcher UI is `BaseThemeToggle` in `src/app/component/base/button/`.
 
+## Page padding
+
+- All pages share one horizontal padding and the same 5px gap between the header, sub-navigation, content and footer, set on the `main` element of `DefaultLayout` (`px-2 py-[5px]`) and the top of `DefaultSubNav` (`pt-[5px]`). The left and right gaps are the same on every page.
+- Page and feature root elements never add their own outer padding or horizontal margin (`p-*`, `px-*`, `m-*`); they only fill the available space with `flex min-h-0 flex-1 flex-col`.
+- A page has exactly two containers: the sub-navigation tabs container (rendered by `DefaultSubNav`) and one content container below it (`rounded-xl border bg-card`). Everything else on the page (statistics, toolbar, table, pagination) lives inside that single content container, separated by inner borders (`border-b`/`border-t`) and never by extra bordered cards.
+- The gap between any two containers (cards, sections, stat tiles, toolbars) on a page is always 4px (`gap-1`). Never use another gap value between containers; stack them in a flex or grid parent with `gap-1`.
+- The header, sub-navigation bar, `main` and footer of `DefaultLayout` all use the same horizontal gutter (`px-2`, 8px), so the section tabs, the page content and the tables line up with the same left and right edges.
+- The page background (the `main` area) uses the `bg-page` color from the `--page` variable in `src/app/globals.css` . It is defined as `var(--muted)`, so it always follows the menu background; change `--muted` to change both.
+- To change the page gutter, change it in all four layout parts together (`DefaultHeader`, `DefaultSubNav`, `DefaultLayout` main, `DefaultFooter`).
+
+## Smooth UI
+
+- Nothing in the UI may appear, disappear or change size abruptly. Anything that shows up after a user action (a new form row, an expanded section, a panel, a message, a dropdown) must animate in smoothly in about 200ms.
+- For blocks that are added to the layout (form rows, collapsible sections, alerts) wrap them in a parent with the `animate-expand` utility from `src/app/globals.css`. It fades the block in and expands its height from 0, so the content below slides down instead of jumping. The wrapper must have a single child element.
+- Do not animate blocks that are present on first render (initial rows, initial content); animate only what is added later.
+- Hover, focus and state changes use Tailwind transitions (`transition-colors`, `transition-opacity`, `duration-150`/`duration-200`), never an instant jump.
+- Every clickable control shows `cursor-pointer`: buttons, checkboxes, switches, menu items and selectable rows. This is set once for buttons and checkboxes in `src/app/globals.css` (`@layer base`); any other custom clickable element must add `cursor-pointer` itself. Selects (trigger and options), dropdown menu items, tabs and radios are included. shadcn/ui components must not use `cursor-default` on clickable parts, because utility classes override the global rule in `globals.css`. Disabled controls use `cursor-not-allowed`.
+- Every animation must be disabled for `prefers-reduced-motion: reduce` (`animate-expand` already does this; for other animations use `motion-reduce:` modifiers).
+- Use short, subtle motion (150–250ms, ease-out); no bouncing or long animations.
+
+## Required fields
+
+- Every input, select and other form field that must be filled in shows a red `*` after its label (`<span className="text-destructive">*</span>`), everywhere in the project.
+- Base inputs (`BaseInputText`, `BaseInputPassword`, `BaseInputAddon`, `BaseSelect`) take a `required` prop that renders the `*`; pass it for every field that is required by its zod schema or that blocks submitting when empty.
+- The `*` is only a visual marker: validation still lives in the zod schema in `src/app/validate/`.
+- When a new Base input component is added, it must support the same `required` prop.
+
 ## Responsive design
 
 - Every page, component and detail must be responsive. Nothing is considered done until it works from a phone (about 360px wide) up to a large desktop.
@@ -141,3 +172,10 @@ Never create files in the project root folders other than `src/` and `public/`, 
 ## Code style
 
 - Do not write comments in pages and components. Only add a comment where the user explicitly asks for one.
+
+## Backend API
+
+- Never guess or assume a backend request or response shape. Before writing or changing any code that depends on an endpoint (service, query, normalizer, payload, form fields), read the Swagger spec and then send a real request to the running backend and inspect the actual response.
+- The backend runs at `NEXT_PUBLIC_API_URL` from `.env` (`http://localhost:3002/api/v1`). The Swagger UI is at `http://localhost:3002/api/docs` and the OpenAPI JSON is at `http://localhost:3002/api-docs`; fetch the JSON with `curl` and read the endpoint paths, parameters and request schemas (`components.schemas`) from it.
+- Swagger describes request bodies and parameters but usually not response bodies. For responses, call the endpoint (for example with `curl` and a bearer token from `POST /auth/login`) and look at the real JSON. If you have no credentials to log in, ask the user for a test login instead of inferring the response shape.
+- Report what you verified: the endpoint, the status code and the fields you saw. If something could not be verified, say so plainly instead of presenting a guess as fact.

@@ -1,11 +1,21 @@
-import { Calculator, CalendarDays, DollarSign, Maximize } from "lucide-react";
+import {
+  Calculator,
+  CalendarDays,
+  DollarSign,
+  Maximize,
+  Minimize,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { BaseCalculator } from "@/component/base/calculator/BaseCalculator";
 import { BaseCalendar } from "@/component/base/calendar/BaseCalendar";
 import { Button } from "@/component/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/component/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/component/ui/popover";
 import {
   CALCULATOR_OPERATOR_SYMBOLS,
   CALENDAR_LOCALES,
@@ -13,12 +23,17 @@ import {
 } from "@/constants/layout/layout.constants";
 import { useAppLocale } from "@/composable/useAppLocale";
 import { useCalculator } from "@/composable/useCalculator";
+import { useFullscreen } from "@/composable/useFullscreen";
 import { formatNumeric } from "@/utils/number-input";
 
 export function DefaultFooter() {
   const t = useTranslations("layout.footer");
   const locale = useAppLocale();
   const calculator = useCalculator();
+  const fullscreen = useFullscreen();
+  const fullscreenLabel = fullscreen.active
+    ? t("exitFullscreen")
+    : t("fullscreen");
   const [date, setDate] = useState<Date | undefined>(() => new Date());
 
   const { display, accumulator, operator } = calculator.state;
@@ -28,16 +43,18 @@ export function DefaultFooter() {
       : "";
 
   return (
-    <footer className="flex shrink-0 items-center gap-2 border-t bg-background px-3 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:gap-3 sm:px-5">
+    <footer className="flex shrink-0 items-center gap-2 border-t bg-background px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:gap-3">
       <div className="flex shrink-0 items-center gap-2">
         <Button
           type="button"
           variant="outline"
           size="icon-lg"
-          aria-label={t("fullscreen")}
-          title={t("fullscreen")}
+          aria-label={fullscreenLabel}
+          title={fullscreenLabel}
+          aria-pressed={fullscreen.active}
+          onClick={fullscreen.toggle}
         >
-          <Maximize />
+          {fullscreen.active ? <Minimize /> : <Maximize />}
         </Button>
 
         <Popover>

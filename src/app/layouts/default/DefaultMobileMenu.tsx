@@ -3,7 +3,6 @@
 import { Menu, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useState } from "react";
 
 import { BaseIconMask } from "@/component/base/icon/BaseIconMask";
@@ -18,15 +17,16 @@ import {
 } from "@/component/ui/sheet";
 import { LAYOUT_BRAND } from "@/constants/layout/layout.constants";
 import { useAppLocale } from "@/composable/useAppLocale";
+import { useCurrentPath } from "@/composable/useCurrentPath";
 import { useMenu } from "@/composable/useMenu";
 import { cn } from "@/lib/utils";
-import { getLocalizedName } from "@/utils/menu";
+import { getLocalizedName, isMenuPageActive } from "@/utils/menu";
 
 const SKELETON_COUNT = 5;
 
 export function DefaultMobileMenu() {
   const t = useTranslations("layout.menu");
-  const { pathname } = useRouter();
+  const pathname = useCurrentPath();
   const locale = useAppLocale();
   const { modules, isPending } = useMenu();
   const [open, setOpen] = useState(false);
@@ -78,7 +78,11 @@ export function DefaultMobileMenu() {
           className="min-h-0 flex-1 overflow-y-auto p-3"
         >
           {isPending && modules.length === 0 ? (
-            <ul aria-busy="true" aria-label={t("loading")} className="flex flex-col gap-2">
+            <ul
+              aria-busy="true"
+              aria-label={t("loading")}
+              className="flex flex-col gap-2"
+            >
               {Array.from({ length: SKELETON_COUNT }, (_, index) => (
                 <li
                   key={index}
@@ -122,7 +126,7 @@ export function DefaultMobileMenu() {
                         <div className={headingClass}>{heading}</div>
                         <ul className="flex flex-col gap-0.5 border-l pl-3 ml-5">
                           {module.pages.map((page) => {
-                            const active = pathname === page.href;
+                            const active = isMenuPageActive(page, pathname);
 
                             return (
                               <li key={page.key}>

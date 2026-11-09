@@ -31,6 +31,7 @@ export type MePage = {
   order: number;
   module_id: number;
   name: MeName;
+  children?: MePage[];
 };
 
 export type MeProfile = {

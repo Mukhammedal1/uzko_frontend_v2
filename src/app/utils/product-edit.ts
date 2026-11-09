@@ -43,6 +43,9 @@ const toBarcodes = (value: unknown) =>
         .filter(Boolean)
     : [];
 
+const toPercent = (raw: Raw, percentKey: string) =>
+  Number(raw.purchase_price) > 0 ? toNumeric(raw[percentKey], true) : "";
+
 const toVariantValues = (raw: Raw): ProductVariantFormValues => {
   const file = isRecord(raw.file) ? raw.file : isRecord(raw.image) ? raw.image : null;
   const fileIdRaw = raw.file_id ?? file?.id;
@@ -66,13 +69,13 @@ const toVariantValues = (raw: Raw): ProductVariantFormValues => {
       raw.wholesale_price_currency_id,
       raw.wholesale_price_currency ?? raw.wholesale_currency,
     ),
-    wholesalePercent: toNumeric(raw.wholesale_price_percentage, true),
+    wholesalePercent: toPercent(raw, "wholesale_price_percentage"),
     retailPrice: toNumeric(raw.retail_price, true),
     retailCurrencyId: toId(
       raw.retail_price_currency_id,
       raw.retail_price_currency ?? raw.retail_currency,
     ),
-    retailPercent: toNumeric(raw.retail_price_percentage, true),
+    retailPercent: toPercent(raw, "retail_price_percentage"),
     allowBelowCost: raw.allow_below_cost_sale === true,
     barcodes: toBarcodes(raw.barcodes),
     article: toText(raw.artikul ?? raw.article ?? raw.sku),

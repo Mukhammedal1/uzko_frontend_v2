@@ -68,7 +68,7 @@ export function BasePagination({
           value={draft}
           disabled={disabled}
           aria-label={pageLabel}
-          className="h-9 w-16 text-center"
+          className="h-7 w-14 text-center"
           onChange={(event) => setDraft(event.target.value.replace(/\D/g, ""))}
           onBlur={commit}
           onKeyDown={(event) => {
@@ -78,7 +78,7 @@ export function BasePagination({
         <Button
           type="button"
           variant="outline"
-          size="icon-lg"
+          size="icon-sm"
           disabled={disabled || page <= 1}
           aria-label={previousLabel}
           onClick={() => onPageChange(page - 1)}
@@ -91,7 +91,7 @@ export function BasePagination({
         <Button
           type="button"
           variant="outline"
-          size="icon-lg"
+          size="icon-sm"
           disabled={disabled || page >= totalPages}
           aria-label={nextLabel}
           onClick={() => onPageChange(page + 1)}
@@ -106,7 +106,7 @@ export function BasePagination({
           value={String(limit)}
           onValueChange={(value) => onLimitChange(Number(value))}
         >
-          <SelectTrigger className="h-9 min-w-20" aria-label={limitLabel}>
+          <SelectTrigger className="h-7 min-w-20" aria-label={limitLabel}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent alignItemWithTrigger={false}>

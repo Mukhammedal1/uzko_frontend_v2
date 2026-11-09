@@ -42,7 +42,8 @@ export function useCreateShelfNumberMutation() {
   return useMutation({
     meta: { toast: "created" },
     mutationFn: (name: string) => shelfNumberService.create(name),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: shelfNumberKeys.all }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: shelfNumberKeys.all }),
   });
 }
 
@@ -53,7 +54,8 @@ export function useUpdateShelfNumberMutation() {
     meta: { toast: "updated" },
     mutationFn: ({ id, name }: { id: number; name: string }) =>
       shelfNumberService.update(id, name),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: shelfNumberKeys.all }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: shelfNumberKeys.all }),
   });
 }
 
@@ -63,6 +65,7 @@ export function useDeleteShelfNumberMutation() {
   return useMutation({
     meta: { toast: "deleted" },
     mutationFn: (id: number) => shelfNumberService.remove(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: shelfNumberKeys.all }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: shelfNumberKeys.all }),
   });
 }

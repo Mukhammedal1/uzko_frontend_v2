@@ -70,7 +70,9 @@ export function BaseInputBarcodes({
           >
             <span
               className={
-                values.length > 0 ? "truncate" : "truncate text-muted-foreground"
+                values.length > 0
+                  ? "truncate"
+                  : "truncate text-muted-foreground"
               }
             >
               {values.length > 0 ? countLabel : placeholder}

@@ -168,7 +168,7 @@ export function DefaultUserMenu() {
                   <DropdownMenuRadioItem
                     key={language.code}
                     value={language.code}
-                      >
+                  >
                     {language.title}
                   </DropdownMenuRadioItem>
                 ))}

@@ -21,7 +21,7 @@ export function SettingsGeneral() {
   const [tab, setTab] = useState<SettingsTabKey>(SETTINGS_DEFAULT_TAB);
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col p-3 sm:px-5">
+    <div className="flex min-h-0 flex-1 flex-col">
       <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border bg-card">
         <div
           role="tablist"

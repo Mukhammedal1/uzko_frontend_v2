@@ -1,5 +1,6 @@
 import { http } from "@/api/intercept";
 import type {
+  AssignVariantsPayload,
   BulkDeletePayload,
   BulkUpdateProductsPayload,
   CreateProductsPayload,
@@ -14,6 +15,8 @@ export const productService = {
     http.post<unknown>("/products", payload),
   update: (payload: BulkUpdateProductsPayload) =>
     http.patch<unknown>("/products", payload),
+  assign: (payload: AssignVariantsPayload) =>
+    http.patch<unknown>("/products/variants/assign", payload),
   remove: (payload: BulkDeletePayload) =>
     http.delete<unknown>("/products", { body: payload }),
 };

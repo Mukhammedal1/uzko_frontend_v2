@@ -20,6 +20,7 @@ type BaseInputAddonProps = {
   value: string;
   placeholder?: string;
   suffix?: string;
+  icon?: ReactNode;
   suffixOptions?: SelectOption[];
   suffixValue?: string;
   compact?: boolean;
@@ -42,6 +43,7 @@ export function BaseInputAddon({
   value,
   placeholder,
   suffix,
+  icon,
   suffixOptions,
   suffixValue = "",
   compact = false,
@@ -71,6 +73,11 @@ export function BaseInputAddon({
       ) : null}
       <div className="flex items-center gap-2">
         <div className="relative min-w-0 flex-1">
+          {icon ? (
+            <span className="pointer-events-none absolute top-1/2 left-3 flex -translate-y-1/2 items-center text-muted-foreground [&_svg]:size-4">
+              {icon}
+            </span>
+          ) : null}
           <Input
             id={id}
             value={numeric ? formatNumeric(value, numeric) : value}
@@ -82,6 +89,7 @@ export function BaseInputAddon({
             aria-invalid={error || invalid ? true : undefined}
             className={cn(
               compact ? "h-7 px-2" : "h-9",
+              icon && "pl-9",
               hasSuffixSelect
                 ? "pr-11"
                 : suffix && (compact ? "pr-6" : "pr-12"),
@@ -129,10 +137,12 @@ export function BaseInputAddon({
               </SelectContent>
             </Select>
           ) : suffix ? (
-            <span className={cn(
+            <span
+              className={cn(
                 "pointer-events-none absolute top-1/2 -translate-y-1/2 text-xs font-semibold text-muted-foreground",
                 compact ? "right-2" : "right-3",
-              )}>
+              )}
+            >
               {suffix}
             </span>
           ) : null}

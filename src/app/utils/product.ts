@@ -33,7 +33,7 @@ const toLabel = (value: unknown): string => {
   if (!isRecord(value)) return "";
   if (typeof value.name === "string") return value.name;
   if (isRecord(value.name)) return toText(value.name.uz);
-  return toText(value.title);
+  return toText(value.title) || toText(value.fullname);
 };
 
 const toImageUrl = (raw: Raw): string | null => {

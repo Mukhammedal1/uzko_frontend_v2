@@ -2,11 +2,11 @@
 
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useRouter } from "next/router";
 
 import { BaseIconMask } from "@/component/base/icon/BaseIconMask";
 import { LAYOUT_BRAND } from "@/constants/layout/layout.constants";
 import { useAppLocale } from "@/composable/useAppLocale";
+import { useCurrentPath } from "@/composable/useCurrentPath";
 import { useMenu } from "@/composable/useMenu";
 import { cn } from "@/lib/utils";
 import { getLocalizedName } from "@/utils/menu";
@@ -15,7 +15,7 @@ const SKELETON_COUNT = 5;
 
 export function DefaultNav() {
   const t = useTranslations("layout");
-  const { pathname } = useRouter();
+  const pathname = useCurrentPath();
   const locale = useAppLocale();
   const { modules, isPending } = useMenu();
 
@@ -68,9 +68,7 @@ export function DefaultNav() {
                 )}
               >
                 {module.iconUrl ? <BaseIconMask src={module.iconUrl} /> : null}
-                <span>
-                  {label}
-                </span>
+                <span>{label}</span>
               </Link>
             </li>
           );

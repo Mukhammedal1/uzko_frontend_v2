@@ -27,13 +27,21 @@ export function ProductsAddMenu({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        render={<Button type="button" className="group h-10 gap-2" />}
+        render={
+          <Button
+            type="button"
+            className="group h-10 gap-2 border border-[var(--focus-border)] shadow-xs"
+          />
+        }
       >
         <PackagePlus />
         {t("add")}
         <ChevronDown className="transition-transform group-data-[popup-open]:rotate-180" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-64 p-2">
+      <DropdownMenuContent
+        align="end"
+        className="min-w-64 border border-border p-2 drop-shadow-md"
+      >
         <DropdownMenuItem className="min-h-10 gap-3 px-3" onClick={onManual}>
           <Package />
           {t("addMenu.manual")}

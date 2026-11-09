@@ -20,7 +20,9 @@ const LABEL_KEYS = [
   "number",
   "shelf_number",
   "full_name",
+  "fullname",
   "company_name",
+  "organization_name",
   "phone",
   "code",
 ];

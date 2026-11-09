@@ -8,7 +8,7 @@ export function BasePagePlaceholder({
   description,
 }: BasePagePlaceholderProps) {
   return (
-    <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-2 px-4 py-10 text-center">
+    <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-2 py-10 text-center">
       <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">
         {title}
       </h1>

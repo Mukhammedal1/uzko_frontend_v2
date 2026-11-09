@@ -72,13 +72,17 @@ export function useMainCurrencyQuery() {
   const currencyRates = useMemo<Record<string, number>>(
     () =>
       Object.fromEntries(
-        businessCurrencies.map((currency) => [String(currency.id), currency.rate]),
+        businessCurrencies.map((currency) => [
+          String(currency.id),
+          currency.rate,
+        ]),
       ),
     [businessCurrencies],
   );
 
   return {
     mainCurrency,
+    businessCurrencies,
     currencyOptions,
     currencyRates,
     isPending: query.isPending,

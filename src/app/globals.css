@@ -4,8 +4,45 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@keyframes expand-in {
+  from {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+  to {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+}
+
+@keyframes clip-content {
+  from,
+  to {
+    overflow: hidden;
+  }
+}
+
+@utility animate-expand {
+  display: grid;
+  animation: expand-in 220ms ease-out;
+
+  & > * {
+    min-height: 0;
+    animation: clip-content 220ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+
+    & > * {
+      animation: none;
+    }
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
+  --color-page: var(--page);
   --color-variant-row: var(--variant-row);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -57,6 +94,7 @@
   --brand: #0c33a0;
   --brand-foreground: #ffffff;
   --variant-row: #f4f6ff;
+  --page: var(--muted);
   --background: #ffffff;
   --foreground: var(--text);
   --card: #ffffff;
@@ -67,7 +105,7 @@
   --primary-foreground: var(--brand-foreground);
   --secondary: #f4f4f5;
   --secondary-foreground: var(--text);
-  --muted: #f4f4f5;
+  --muted: #dde1e4;
   --muted-foreground: color-mix(in srgb, var(--text) 70%, white);
   --accent: #f4f4f5;
   --accent-foreground: var(--text);
@@ -137,7 +175,17 @@
     @apply font-sans text-sm;
   }
   button:not(:disabled),
-  [role="button"]:not([aria-disabled="true"]) {
+  [role="button"]:not([aria-disabled="true"]),
+  [role="checkbox"]:not([aria-disabled="true"]),
+  [role="menuitemcheckbox"]:not([aria-disabled="true"]),
+  [role="combobox"]:not([aria-disabled="true"]):not(:disabled),
+  [role="option"]:not([aria-disabled="true"]),
+  [role="menuitem"]:not([aria-disabled="true"]),
+  [role="tab"]:not([aria-disabled="true"]),
+  [role="switch"]:not([aria-disabled="true"]),
+  [role="radio"]:not([aria-disabled="true"]),
+  label[for]:not(:has(:disabled)),
+  input[type="checkbox"]:not(:disabled) {
     cursor: pointer;
   }
 }

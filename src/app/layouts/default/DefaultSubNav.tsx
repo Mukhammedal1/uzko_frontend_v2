@@ -1,15 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/router";
 
 import { useAppLocale } from "@/composable/useAppLocale";
+import { useCurrentPath } from "@/composable/useCurrentPath";
 import { useMenu } from "@/composable/useMenu";
 import { cn } from "@/lib/utils";
-import { getLocalizedName } from "@/utils/menu";
+import { getLocalizedName, isMenuPageActive } from "@/utils/menu";
 
 export function DefaultSubNav() {
-  const { pathname } = useRouter();
+  const pathname = useCurrentPath();
   const locale = useAppLocale();
   const { modules } = useMenu();
 
@@ -23,11 +23,10 @@ export function DefaultSubNav() {
   const moduleLabel = getLocalizedName(activeModule.name, locale);
 
   return (
-    <nav aria-label={moduleLabel} className="shrink-0 px-3 pt-1 sm:px-3">
+    <nav aria-label={moduleLabel} className="shrink-0 bg-page px-2 pt-[5px]">
       <ul className="flex items-center gap-2 overflow-x-auto rounded-xl border bg-card p-1 shadow-sm">
         {activeModule.pages.map((page) => {
-          const active =
-            pathname === page.href || pathname.startsWith(`${page.href}/`);
+          const active = isMenuPageActive(page, pathname);
 
           return (
             <li key={page.key} className="shrink-0">

@@ -6,10 +6,13 @@ import {
   PackageMinus,
   Pencil,
   Percent,
+  Rows3,
   Trash2,
+  Warehouse,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import type { ProductAssignKind } from "@/types/product.types";
 import { Button } from "@/component/ui/button";
 import {
   DropdownMenu,
@@ -21,7 +24,7 @@ import {
 type ProductsBulkMenuProps = {
   count: number;
   onEdit: () => void;
-  onMerge: () => void;
+  onAssign: (kind: ProductAssignKind) => void;
   onDiscount: () => void;
   onWriteOff: () => void;
   onDelete: () => void;
@@ -30,7 +33,7 @@ type ProductsBulkMenuProps = {
 export function ProductsBulkMenu({
   count,
   onEdit,
-  onMerge,
+  onAssign,
   onDiscount,
   onWriteOff,
   onDelete,
@@ -59,9 +62,26 @@ export function ProductsBulkMenu({
           <Pencil />
           {t("bulk.edit")}
         </DropdownMenuItem>
-        <DropdownMenuItem className="min-h-10 gap-3 px-3" onClick={onMerge}>
+        <DropdownMenuItem
+          className="min-h-10 gap-3 px-3"
+          onClick={() => onAssign("supplier")}
+        >
           <Link2 />
-          {t("bulk.merge")}
+          {t("bulk.mergeSupplier")}
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          className="min-h-10 gap-3 px-3"
+          onClick={() => onAssign("stock")}
+        >
+          <Warehouse />
+          {t("bulk.mergeStock")}
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          className="min-h-10 gap-3 px-3"
+          onClick={() => onAssign("shelf")}
+        >
+          <Rows3 />
+          {t("bulk.mergeShelf")}
         </DropdownMenuItem>
         <DropdownMenuItem className="min-h-10 gap-3 px-3" onClick={onDiscount}>
           <Percent />

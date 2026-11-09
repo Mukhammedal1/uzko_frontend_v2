@@ -4,9 +4,13 @@ import { ArrowLeft, Check } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/router";
 import { useMemo, useState, type ReactNode } from "react";
+import { useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 
 import { Button } from "@/component/ui/button";
+import { Label } from "@/component/ui/label";
+import { Switch } from "@/component/ui/switch";
+import { useRoundPrices } from "@/composable/useRoundPrices";
 import {
   PRODUCT_BULK_EDIT_QUERY,
   PRODUCTS_LIST_PATH,
@@ -42,11 +46,13 @@ function ProductBulkEditShell({
   submitting,
   canSubmit,
   children,
+  roundSwitch,
   onSubmit,
 }: {
   submitting: boolean;
   canSubmit: boolean;
   children: ReactNode;
+  roundSwitch?: ReactNode;
   onSubmit?: () => void;
 }) {
   const t = useTranslations("productEdit");
@@ -56,12 +62,13 @@ function ProductBulkEditShell({
   return (
     <form
       noValidate
-      className="flex min-h-0 flex-1 flex-col p-3 sm:px-5"
+      className="flex min-h-0 flex-1 flex-col"
       onSubmit={onSubmit}
     >
       <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border bg-card">
         <header className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b px-3 py-2 sm:px-4 sm:py-3">
           <div className="flex min-w-0 flex-col gap-0.5">
+            {roundSwitch}
             <h1 className="text-base font-semibold">{t("bulkTitle")}</h1>
             <p className="text-xs text-muted-foreground">
               {t("bulkDescription")}
@@ -116,6 +123,18 @@ function ProductBulkEditForm({ targets, initialRows }: ProductBulkEditFormProps)
 
   const { dirtyFields } = form.formState;
   const defaultCurrencyId = mainCurrency ? String(mainCurrency.id) : "";
+  const roundPrices = useWatch({ control: form.control, name: "roundPrices" });
+
+  const { handleRoundChange } = useRoundPrices({
+    form,
+    defaultCurrencyId,
+    currencyRates,
+    include: (rowIndex, variantIndex) => {
+      const { variantIds } = targets[rowIndex];
+      const id = form.getValues(`rows.${rowIndex}.variants.${variantIndex}.id`);
+      return id === null || variantIds.length === 0 || variantIds.includes(id);
+    },
+  });
 
   const handleSubmit = form.handleSubmit((values: ProductCreateFormValues) => {
     if (!mainCurrency) {
@@ -151,6 +170,22 @@ function ProductBulkEditForm({ targets, initialRows }: ProductBulkEditFormProps)
     <ProductBulkEditShell
       submitting={updateProducts.isPending}
       canSubmit
+      roundSwitch={
+        <div className="flex items-center gap-2">
+          <Switch
+            id="product-bulk-edit-round"
+            className="cursor-pointer"
+            checked={roundPrices}
+            onCheckedChange={handleRoundChange}
+          />
+          <Label
+            htmlFor="product-bulk-edit-round"
+            className="cursor-pointer font-normal"
+          >
+            {tCreate("roundPrices")}
+          </Label>
+        </div>
+      }
       onSubmit={handleSubmit}
     >
       <div className="flex flex-col gap-4">

@@ -23,6 +23,7 @@ import {
 } from "@/constants/product/product.constants";
 
 import type {
+  ProductAssignKind,
   ProductBoolFilterKey,
   ProductFilterKey,
   ProductFilters,
@@ -45,7 +46,7 @@ type ProductsToolbarProps = {
   onAddImport: () => void;
   onAddTemplate: () => void;
   onBulkEdit: () => void;
-  onBulkMerge: () => void;
+  onBulkAssign: (kind: ProductAssignKind) => void;
   onBulkDiscount: () => void;
   onBulkWriteOff: () => void;
   onBulkDelete: () => void;
@@ -66,7 +67,7 @@ export function ProductsToolbar({
   onAddImport,
   onAddTemplate,
   onBulkEdit,
-  onBulkMerge,
+  onBulkAssign,
   onBulkDiscount,
   onBulkWriteOff,
   onBulkDelete,
@@ -110,7 +111,7 @@ export function ProductsToolbar({
         <ProductsBulkMenu
           count={selectedCount}
           onEdit={onBulkEdit}
-          onMerge={onBulkMerge}
+          onAssign={onBulkAssign}
           onDiscount={onBulkDiscount}
           onWriteOff={onBulkWriteOff}
           onDelete={onBulkDelete}

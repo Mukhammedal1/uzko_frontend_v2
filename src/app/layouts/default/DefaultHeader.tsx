@@ -14,7 +14,7 @@ export function DefaultHeader() {
   const t = useTranslations("layout.actions");
 
   return (
-    <header className="flex shrink-0 items-center gap-2 border-b bg-background px-3 py-2 sm:gap-4 sm:px-3">
+    <header className="flex shrink-0 items-center gap-2 border-b bg-background px-2 py-2 sm:gap-4">
       <DefaultMobileMenu />
 
       <Link

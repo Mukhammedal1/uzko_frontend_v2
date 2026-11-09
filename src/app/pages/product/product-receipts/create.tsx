@@ -1,8 +1,8 @@
-import { PageStub } from "@/features/stub/PageStub";
+import { PurchaseCreate } from "@/features/purchase/PurchaseCreate";
 import { getDefaultLayout } from "@/layouts/DefaultLayout";
 import type { NextPageWithLayout } from "@/types/page.types";
 
-const Page: NextPageWithLayout = () => <PageStub pageKey="product-purchase" />;
+const Page: NextPageWithLayout = () => <PurchaseCreate />;
 
 Page.getLayout = getDefaultLayout;
 

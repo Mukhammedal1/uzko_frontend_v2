@@ -14,6 +14,7 @@ type BaseInputPasswordProps = {
   showLabel: string;
   hideLabel: string;
   placeholder?: string;
+  required?: boolean;
   autoComplete?: string;
   error?: string;
   disabled?: boolean;
@@ -28,6 +29,7 @@ export function BaseInputPassword({
   showLabel,
   hideLabel,
   placeholder,
+  required,
   autoComplete,
   error,
   disabled,
@@ -38,7 +40,10 @@ export function BaseInputPassword({
 
   return (
     <div className="flex w-full flex-col gap-2">
-      <Label htmlFor={id}>{label}</Label>
+      <Label htmlFor={id}>
+        {label}
+        {required ? <span className="text-destructive">*</span> : null}
+      </Label>
       <div className="relative">
         <Input
           id={id}
